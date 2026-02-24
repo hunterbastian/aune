@@ -201,10 +201,9 @@
     text-shadow: 1px 1px #3c1e0a;
   }
 
-  /* Minimap */
-  #minimap { display: none; }
-  #minimap-label { display: none; }
+  /* Minimap — hidden until game starts, shown via JS */
   #minimap {
+    display: none;
     position: absolute;
     bottom: 16px; right: 12px;
     width: 100px; height: 100px;
@@ -218,6 +217,7 @@
   }
   #minimap canvas { width: 100%; height: 100%; display: block; }
   #minimap-label {
+    display: none;
     position: absolute;
     bottom: 122px; right: 12px;
     font-size: 5px;
@@ -317,6 +317,77 @@ const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 const TAU = Math.PI * 2;
 
+// ── GAME CONFIGURATION ──────────────────────────────────
+// Tunable balance values extracted for clarity and easy adjustment.
+const CONFIG = {
+  // Player defaults
+  playerRadius: 13,
+  playerSpeed: 115,
+  playerMaxHp: 100,
+  playerDamage: 18,
+  playerFireRate: 0.85,
+  playerMagnetRange: 75,
+  playerIframeDuration: 0.55,
+
+  // Projectile
+  projectileSpeed: 320,
+  arrowSpeed: 190,
+  projectileMaxRange: 650,
+  projectileSpread: 0.55,
+  maxProjectileCount: 6,
+
+  // Wave & spawning
+  waveDuration: 20,          // seconds per wave
+  bossWaveInterval: 5,       // boss every N waves
+  spawnIntervalBase: 1.1,    // base seconds between spawns
+  spawnIntervalDecay: 0.04,  // interval reduction per wave
+  spawnIntervalMin: 0.2,     // minimum spawn interval
+  spawnCountBase: 1,
+  spawnCountGrowth: 3,       // new enemy slot every N waves
+  spawnCountMax: 4,
+
+  // Enemy scaling per wave
+  enemyHpScale: 0.15,
+  enemySpdScale: 0.03,
+  enemyDmgScale: 0.07,
+  bossHpScale: 0.08,
+  bossSpdScale: 0.02,
+  bossDmgScale: 0.05,
+
+  // Orbiting blades
+  bladeOrbitRadius: 58,
+  bladeHitRadius: 14,
+  bladeRotationSpeed: 2.4,
+  bladeDamageMult: 0.85,
+  bladeCooldown: 0.35,
+  bladeKnockback: 300,
+  maxBladeCount: 5,
+
+  // Level up
+  xpBase: 20,
+  xpScaling: 1.28,
+  hpPerLevel: 8,
+  healOnLevel: 15,
+
+  // Particles & limits
+  maxParticles: 350,
+  killParticleCount: 14,
+
+  // Shield defaults
+  shieldDurBase: 1.2,
+  shieldCDBase: 12,
+
+  // Auto-fire max range (squared distance used for comparison)
+  fireRange: 500,
+
+  // Camera shake decay rate (lower = faster decay)
+  shakeDecay: 0.04,
+
+  // Minimap
+  minimapViewRange: 800,
+  minimapDangerDist: 100,
+};
+
 function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
 resize();
 window.addEventListener('resize', () => { resize(); buildGrass(); });
@@ -378,7 +449,7 @@ const mmCanvas = document.getElementById('mm');
 const mmCtx = mmCanvas.getContext('2d');
 const MM_W = 100, MM_H = 100;
 mmCanvas.width = MM_W; mmCanvas.height = MM_H;
-const MM_VIEW = 800;
+const MM_VIEW = CONFIG.minimapViewRange;
 function renderMinimap() {
   if (!P) return;
   mmCtx.fillStyle = '#1a0e04';
@@ -415,12 +486,35 @@ function renderMinimap() {
     const d = Math.hypot(e.x - P.x, e.y - P.y);
     return d < best ? d : best;
   }, Infinity);
-  if (nearest < 100) {
+  if (nearest < CONFIG.minimapDangerDist) {
     mmCtx.strokeStyle = `rgba(255,60,20,${0.5 + 0.5 * Math.sin(elapsed * 10)})`;
     mmCtx.lineWidth = 2;
     mmCtx.strokeRect(1, 1, MM_W - 2, MM_H - 2);
   }
 }
+
+// ── CACHED DOM ELEMENTS ───────────────────────────────────
+// Avoid repeated getElementById calls in the hot render path.
+const DOM = {
+  xpFill:       document.getElementById('xp-fill'),
+  levelTxt:     document.getElementById('level-txt'),
+  killsTxt:     document.getElementById('kills-txt'),
+  timerTxt:     document.getElementById('timer-txt'),
+  healthFill:   document.getElementById('health-fill'),
+  minimap:      document.getElementById('minimap'),
+  minimapLabel: document.getElementById('minimap-label'),
+  waveBanner:   document.getElementById('wave-banner'),
+  levelup:      document.getElementById('levelup'),
+  luSub:        document.getElementById('lu-sub'),
+  cards:        document.getElementById('cards'),
+  menu:         document.getElementById('menu'),
+  gameover:     document.getElementById('gameover'),
+  goTime:       document.getElementById('go-time'),
+  goKills:      document.getElementById('go-kills'),
+  goLevel:      document.getElementById('go-level'),
+  btnStart:     document.getElementById('btn-start'),
+  btnRetry:     document.getElementById('btn-retry'),
+};
 
 // ── INPUT ──────────────────────────────────────────────────
 const keys = {};
@@ -441,14 +535,14 @@ const UPGRADES = [
   { id:'atk',   icon:'✨',  name:'ARCANE POWER',   desc:'Spell damage increased',        fn: p => { p.dmg += 10; } },
   { id:'spd',   icon:'🥾',  name:'SWIFT BOOTS',    desc:'Movement speed increased',       fn: p => { p.spd += 28; } },
   { id:'rate',  icon:'🌀',  name:'SPELL HASTE',    desc:'Cast speed increased',           fn: p => { p.rate = Math.max(0.15, p.rate * 0.68); } },
-  { id:'multi', icon:'✦',   name:'SPLIT STRIKE',   desc:'Throw one more projectile',      fn: p => { p.count = Math.min(6, p.count + 1); } },
+  { id:'multi', icon:'✦',   name:'SPLIT STRIKE',   desc:'Throw one more projectile',      fn: p => { p.count = Math.min(CONFIG.maxProjectileCount, p.count + 1); } },
   { id:'hp',    icon:'🧡',  name:'IRON WILL',      desc:'Max health increased',           fn: p => { p.maxHp += 25; p.hp = Math.min(p.maxHp, p.hp + 25); } },
   { id:'regen', icon:'🌿',  name:'HERBAL REMEDY',  desc:'Slowly regenerate health',       fn: p => { p.regen += 2; } },
   { id:'aoe',   icon:'💥',  name:'ARCANE NOVA',    desc:'Spells explode on hit',          fn: p => { p.aoe = true; p.aoeR = (p.aoeR || 28) + 12; } },
   { id:'mag',   icon:'🧲',  name:'SPIRIT PULL',    desc:'Attract XP gems from afar',      fn: p => { p.mag += 70; } },
   { id:'pierce',icon:'🔱',  name:'PIERCING BOLT',  desc:'Projectiles pass through foes',  fn: p => { p.pierce = true; } },
   { id:'shield',icon:'🔮', name:'MAGE WARD',      desc:'Arcane barrier pulses',          fn: p => { p.shieldOn = true; p.shieldDur = (p.shieldDur||1)+0.4; p.shieldCD = Math.max(5,(p.shieldCD||12)-1); } },
-  { id:'blade', icon:'🌟', name:'MYSTIC ORB',     desc:'Orbs orbit and knock back foes',  fn: p => { p.bladeCount = Math.min(5, p.bladeCount + 1); } },
+  { id:'blade', icon:'🌟', name:'MYSTIC ORB',     desc:'Orbs orbit and knock back foes',  fn: p => { p.bladeCount = Math.min(CONFIG.maxBladeCount, p.bladeCount + 1); } },
 ];
 
 // ── STATE ─────────────────────────────────────────────────
@@ -458,27 +552,30 @@ let elapsed, kills, lastT, waveN, spawnT, shakeAmt, shakeX, shakeY;
 let camX = 0, camY = 0;
 let damageFlash = 0;
 
+/** @returns {Object} Fresh player state with default stats */
 function mkPlayer() {
   return {
     x: 0, y: 0,
-    r: 13, spd: 115, maxHp: 100, hp: 100,
-    level: 1, xp: 0, xpNext: 20,
-    dmg: 18, rate: 0.85, fireT: 0,
+    r: CONFIG.playerRadius, spd: CONFIG.playerSpeed,
+    maxHp: CONFIG.playerMaxHp, hp: CONFIG.playerMaxHp,
+    level: 1, xp: 0, xpNext: CONFIG.xpBase,
+    dmg: CONFIG.playerDamage, rate: CONFIG.playerFireRate, fireT: 0,
     count: 1, aoe: false, aoeR: 40,
-    mag: 75, regen: 0, regenT: 0,
-    shieldOn: false, shieldDur: 1.2, shieldCD: 12,
+    mag: CONFIG.playerMagnetRange, regen: 0, regenT: 0,
+    shieldOn: false, shieldDur: CONFIG.shieldDurBase, shieldCD: CONFIG.shieldCDBase,
     shieldT: 0, shielded: false, shieldActiveT: 0,
     iframes: false, iframeT: 0,
     upgrades: [],
     dx: 0, dy: 0,
     lastMX: 1,
-    // Orbiting blade
+    // Orbiting blades
     bladeCount: 0, bladeAngle: 0,
     bladeCooldowns: new Map(),
   };
 }
 
 // ── FACTORIES ─────────────────────────────────────────────
+/** @returns {Object} A new enemy spawned off-screen based on current wave */
 function mkEnemy() {
   const w = waveN;
   const pool = [];
@@ -495,32 +592,38 @@ function mkEnemy() {
   const dist = minD + Math.random() * (maxD - minD);
   const x = P.x + Math.cos(angle) * dist;
   const y = P.y + Math.sin(angle) * dist;
-  const scale = 1 + w * 0.15;
+  const scale = 1 + w * CONFIG.enemyHpScale;
   return {
     type, x, y, r: d.r,
-    spd: d.spd * (1 + w * 0.03),
+    spd: d.spd * (1 + w * CONFIG.enemySpdScale),
     maxHp: Math.floor(d.hp * scale), hp: Math.floor(d.hp * scale),
-    xp: d.xp, dmg: d.dmg * (1 + w * 0.07),
+    xp: d.xp, dmg: d.dmg * (1 + w * CONFIG.enemyDmgScale),
     color: d.color,
     fireT: Math.random() * 3,
     flash: 0, vx: 0, vy: 0,
   };
 }
 
+/** @returns {Object} XP gem at (x,y) worth v experience */
 function mkGem(x,y,v) {
   return {x,y,vx:(Math.random()-.5)*50,vy:(Math.random()-.5)*50,v,r:4+Math.sqrt(v)*.4,life:1};
 }
+/** @returns {Object} Particle with random velocity, color, and decay rate */
 function mkPart(x,y,col,spd,sz,dec) {
   return {x,y,vx:(Math.random()-.5)*spd,vy:(Math.random()-.5)*spd,r:sz,col,life:1,dec:dec||1};
 }
+/** @returns {Object} Floating damage/info text that rises and fades */
 function mkFloat(x,y,txt,col) {
   return {x,y,txt,col,vy:-35,life:1,dec:1.4};
 }
 
 // ── COMBAT ────────────────────────────────────────────────
+/** Circle-circle collision test using squared distances (no sqrt) */
 function overlap(a,b) { const dx=a.x-b.x,dy=a.y-b.y,r=a.r+b.r; return dx*dx+dy*dy<r*r; }
+/** Squared distance between two points — avoids sqrt for comparisons */
 function dst2(a,b)    { const dx=a.x-b.x,dy=a.y-b.y; return dx*dx+dy*dy; }
 
+/** Apply d damage to enemy e, triggering death at 0 HP */
 function hitEnemy(e, d) {
   e.hp -= d;
   e.flash = 0.25;
@@ -529,6 +632,7 @@ function hitEnemy(e, d) {
   if (e.hp <= 0) killEnemy(e);
 }
 
+/** Kill enemy, spawn death particles and XP gems */
 function killEnemy(e) {
   e.hp = -9999; kills++;
   for (let i=0;i<14;i++) parts.push(mkPart(e.x,e.y,e.color,90+Math.random()*70,2+Math.random()*3,1.1));
@@ -539,10 +643,11 @@ function killEnemy(e) {
   sfxKill();
 }
 
+/** Damage the player (blocked by iframes or shield). Triggers game over at 0 HP */
 function hurtPlayer(amt) {
   if (P.iframes || P.shielded) return;
   P.hp = Math.max(0, P.hp - amt);
-  P.iframes = true; P.iframeT = 0.55;
+  P.iframes = true; P.iframeT = CONFIG.playerIframeDuration;
   shake(9);
   sfxHurt();
   damageFlash = 1;
@@ -557,8 +662,8 @@ function gainXp(v) {
   while (P.xp >= P.xpNext) {
     P.xp -= P.xpNext;
     P.level++;
-    P.xpNext = Math.floor(P.xpNext * 1.28);
-    P.maxHp += 8; P.hp = Math.min(P.maxHp, P.hp + 15);
+    P.xpNext = Math.floor(P.xpNext * CONFIG.xpScaling);
+    P.maxHp += CONFIG.hpPerLevel; P.hp = Math.min(P.maxHp, P.hp + CONFIG.healOnLevel);
     showLevelUp();
   }
 }
@@ -568,8 +673,8 @@ function showLevelUp() {
   sfxLevelUp();
   mode = 'levelup';
   const picks = UPGRADES.slice().sort(() => Math.random() - .5).slice(0, 3);
-  document.getElementById('lu-sub').textContent = 'LEVEL ' + P.level + ' — CHOOSE A BOON';
-  const cont = document.getElementById('cards');
+  DOM.luSub.textContent = 'LEVEL ' + P.level + ' — CHOOSE A BOON';
+  const cont = DOM.cards;
   while (cont.firstChild) cont.removeChild(cont.firstChild);
   picks.forEach(u => {
     const card = document.createElement('div');
@@ -581,18 +686,19 @@ function showLevelUp() {
     card.addEventListener('click', () => pickUpgrade(u));
     cont.appendChild(card);
   });
-  document.getElementById('levelup').classList.add('show');
+  DOM.levelup.classList.add('show');
 }
 
 function pickUpgrade(u) {
   u.fn(P);
   P.upgrades.push(u.id);
-  document.getElementById('levelup').classList.remove('show');
+  DOM.levelup.classList.remove('show');
   mode = 'play';
   floats.push(mkFloat(P.x, P.y - 36, u.name, '#c4a020'));
 }
 
 // ── FIRE PROJECTILE ────────────────────────────────────────
+/** Fire player projectiles toward the given target(s) */
 function fireAt(targets) {
   sfxShoot();
   for (let t = 0; t < Math.min(targets.length, 1); t++) {
@@ -601,11 +707,11 @@ function fireAt(targets) {
     if (!d) continue;
     const base = Math.atan2(dy, dx);
     for (let i = 0; i < P.count; i++) {
-      const sp = P.count > 1 ? ((i / (P.count - 1)) - .5) * 0.55 : 0;
+      const sp = P.count > 1 ? ((i / (P.count - 1)) - .5) * CONFIG.projectileSpread : 0;
       const a = base + sp;
       shots.push({
         x: P.x, y: P.y,
-        vx: Math.cos(a) * 320, vy: Math.sin(a) * 320,
+        vx: Math.cos(a) * CONFIG.projectileSpeed, vy: Math.sin(a) * CONFIG.projectileSpeed,
         r: P.pierce ? 4 : 5,
         dmg: P.dmg, aoe: P.aoe, aoeR: P.aoeR,
         pierce: P.pierce,
@@ -616,12 +722,14 @@ function fireAt(targets) {
   }
 }
 
+/** Fire an enemy arrow from archer e toward the player */
 function fireArrow(e) {
   const dx = P.x - e.x, dy = P.y - e.y, d = Math.sqrt(dx*dx + dy*dy);
   if (!d) return;
-  shots.push({x:e.x,y:e.y,vx:(dx/d)*190,vy:(dy/d)*190,r:4,dmg:e.dmg*.55,life:1,enemy:true,trail:[]});
+  shots.push({x:e.x,y:e.y,vx:(dx/d)*CONFIG.arrowSpeed,vy:(dy/d)*CONFIG.arrowSpeed,r:4,dmg:e.dmg*.55,life:1,enemy:true,trail:[]});
 }
 
+/** AOE explosion at (x,y) with radius r dealing d base damage */
 function explode(x, y, r, d) {
   enemies.forEach(e => {
     if (e.hp < 0) return;
@@ -642,10 +750,10 @@ function startGame() {
   waveBannerTimer = 0; damageFlash = 0;
   lastT = null; mode = 'play';
   buildGrass();
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('gameover').classList.remove('show');
-  document.getElementById('levelup').classList.remove('show');
-  document.getElementById('wave-banner').classList.remove('show');
+  DOM.menu.style.display = 'none';
+  DOM.gameover.classList.remove('show');
+  DOM.levelup.classList.remove('show');
+  DOM.waveBanner.classList.remove('show');
   [262, 330, 392, 523].forEach((f, i) => {
     setTimeout(() => playTone('square', f, 0.05, 0.13, true, 0), i * 80);
   });
@@ -654,24 +762,24 @@ function startGame() {
 function gameOver() {
   mode = 'over';
   const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
-  document.getElementById('go-time').textContent = m + ':' + String(s).padStart(2, '0');
-  document.getElementById('go-kills').textContent = kills;
-  document.getElementById('go-level').textContent = P.level;
-  document.getElementById('gameover').classList.add('show');
-  document.getElementById('minimap').style.display = 'none';
-  document.getElementById('minimap-label').style.display = 'none';
-  document.getElementById('wave-banner').classList.remove('show');
+  DOM.goTime.textContent = m + ':' + String(s).padStart(2, '0');
+  DOM.goKills.textContent = kills;
+  DOM.goLevel.textContent = P.level;
+  DOM.gameover.classList.add('show');
+  DOM.minimap.style.display = 'none';
+  DOM.minimapLabel.style.display = 'none';
+  DOM.waveBanner.classList.remove('show');
   playTone('sawtooth', 110, 0.12, 0.4, true, 0);
   setTimeout(() => playTone('sawtooth', 80, 0.10, 0.5, true, 0), 200);
 }
 
-document.getElementById('btn-start').addEventListener('click', startGame);
-document.getElementById('btn-retry').addEventListener('click', startGame);
+DOM.btnStart.addEventListener('click', startGame);
+DOM.btnRetry.addEventListener('click', startGame);
 
 // ── BOSS SPAWN ────────────────────────────────────────────
 function spawnBoss() {
   const d = ETYPE.boss;
-  const scale = 1 + waveN * 0.08;
+  const scale = 1 + waveN * CONFIG.bossHpScale;
   // Radial spawn around player
   const angle = Math.random() * TAU;
   const dist = Math.max(canvas.width, canvas.height) * 0.6;
@@ -679,17 +787,16 @@ function spawnBoss() {
   const y = P.y + Math.sin(angle) * dist;
   enemies.push({
     type: 'boss', x, y, r: d.r,
-    spd: d.spd * (1 + waveN * 0.02),
+    spd: d.spd * (1 + waveN * CONFIG.bossSpdScale),
     maxHp: Math.floor(d.hp * scale), hp: Math.floor(d.hp * scale),
-    xp: d.xp, dmg: d.dmg * (1 + waveN * 0.05),
+    xp: d.xp, dmg: d.dmg * (1 + waveN * CONFIG.bossDmgScale),
     color: d.color,
     fireT: 3 + Math.random() * 2, flash: 0, vx: 0, vy: 0,
     isBoss: true,
   });
-  const el = document.getElementById('wave-banner');
-  el.textContent = '!! AUNE SHAKES !!';
-  el.style.color = '#ff4040';
-  el.classList.add('show');
+  DOM.waveBanner.textContent = '!! AUNE SHAKES !!';
+  DOM.waveBanner.style.color = '#ff4040';
+  DOM.waveBanner.classList.add('show');
   waveBannerTimer = 3;
   playTone('sawtooth', 80, 0.12, 0.5, true, 0);
   setTimeout(() => playTone('sawtooth', 60, 0.15, 0.7, true, 0), 300);
@@ -699,10 +806,9 @@ function spawnBoss() {
 // ── WAVE ANNOUNCE ─────────────────────────────────────────
 let waveBannerTimer = 0;
 function showWave(n) {
-  const el = document.getElementById('wave-banner');
-  el.textContent = '~ AUNE WAVE ' + n + ' ~';
-  el.style.color = '#f8e030';
-  el.classList.add('show');
+  DOM.waveBanner.textContent = '~ AUNE WAVE ' + n + ' ~';
+  DOM.waveBanner.style.color = '#f8e030';
+  DOM.waveBanner.classList.add('show');
   waveBannerTimer = 2.2;
   playTone('square', 330, 0.05, 0.12, true, 0);
   setTimeout(() => playTone('square', 440, 0.05, 0.12, true, 0), 100);
@@ -711,7 +817,7 @@ function showWave(n) {
 function updateWaveBanner(dt) {
   if (waveBannerTimer > 0) {
     waveBannerTimer -= dt;
-    if (waveBannerTimer <= 0) document.getElementById('wave-banner').classList.remove('show');
+    if (waveBannerTimer <= 0) DOM.waveBanner.classList.remove('show');
   }
 }
 
@@ -720,25 +826,25 @@ function update(dt) {
   if (mode !== 'play') return;
   elapsed += dt;
 
-  shakeAmt *= Math.pow(0.04, dt);
+  shakeAmt *= Math.pow(CONFIG.shakeDecay, dt);
   shakeX = (Math.random() - .5) * shakeAmt * 2;
   shakeY = (Math.random() - .5) * shakeAmt * 2;
 
   updateWaveBanner(dt);
 
   // Wave progression
-  const nw = Math.floor(elapsed / 20) + 1;
+  const nw = Math.floor(elapsed / CONFIG.waveDuration) + 1;
   if (nw > waveN) {
     waveN = nw;
-    if (waveN % 5 === 0) spawnBoss();
+    if (waveN % CONFIG.bossWaveInterval === 0) spawnBoss();
     else showWave(waveN);
   }
 
   spawnT += dt;
-  const si = Math.max(0.2, 1.1 - waveN * 0.04);
+  const si = Math.max(CONFIG.spawnIntervalMin, CONFIG.spawnIntervalBase - waveN * CONFIG.spawnIntervalDecay);
   if (spawnT >= si) {
     spawnT = 0;
-    const cnt = Math.min(4, 1 + Math.floor(waveN / 3));
+    const cnt = Math.min(CONFIG.spawnCountMax, CONFIG.spawnCountBase + Math.floor(waveN / CONFIG.spawnCountGrowth));
     for (let i = 0; i < cnt; i++) enemies.push(mkEnemy());
   }
 
@@ -773,33 +879,38 @@ function update(dt) {
   // Invincibility frames
   if (P.iframes) { P.iframeT -= dt; if (P.iframeT <= 0) P.iframes = false; }
 
-  // Auto fire toward nearest enemy
+  // Auto fire toward nearest living enemy within range (single O(n) pass)
   P.fireT -= dt;
   if (P.fireT <= 0) {
-    const sorted = enemies.filter(e => e.hp > 0).sort((a, b) => dst2(a, P) - dst2(b, P));
-    if (sorted.length) { fireAt(sorted); P.fireT = P.rate; }
+    const maxRange2 = CONFIG.fireRange * CONFIG.fireRange;
+    let nearest = null, nearDist = Infinity;
+    for (const e of enemies) {
+      if (e.hp <= 0) continue;
+      const d2 = dst2(e, P);
+      if (d2 < nearDist && d2 < maxRange2) { nearDist = d2; nearest = e; }
+    }
+    if (nearest) { fireAt([nearest]); P.fireT = P.rate; }
   }
 
   // Orbiting blades — update angle and check collisions
   if (P.bladeCount > 0) {
-    P.bladeAngle += dt * 2.4;
-    const bladeR = 58, hitR = 14;
+    P.bladeAngle += dt * CONFIG.bladeRotationSpeed;
     for (let i = 0; i < P.bladeCount; i++) {
       const ang = P.bladeAngle + (i / P.bladeCount) * TAU;
-      const bx = P.x + Math.cos(ang) * bladeR;
-      const by = P.y + Math.sin(ang) * bladeR;
+      const bx = P.x + Math.cos(ang) * CONFIG.bladeOrbitRadius;
+      const by = P.y + Math.sin(ang) * CONFIG.bladeOrbitRadius;
       for (const e of enemies) {
         if (e.hp < 0) continue;
         if ((P.bladeCooldowns.get(e) || 0) > elapsed) continue;
         const dx = e.x - bx, dy = e.y - by;
-        const thresh = e.r + hitR;
+        const thresh = e.r + CONFIG.bladeHitRadius;
         if (dx * dx + dy * dy < thresh * thresh) {
-          hitEnemy(e, P.dmg * 0.85);
-          P.bladeCooldowns.set(e, elapsed + 0.35);
+          hitEnemy(e, P.dmg * CONFIG.bladeDamageMult);
+          P.bladeCooldowns.set(e, elapsed + CONFIG.bladeCooldown);
           // Knockback away from blade
           const bd = Math.sqrt(dx * dx + dy * dy) || 1;
-          e.vx += (dx / bd) * 300;
-          e.vy += (dy / bd) * 300;
+          e.vx += (dx / bd) * CONFIG.bladeKnockback;
+          e.vy += (dy / bd) * CONFIG.bladeKnockback;
         }
       }
     }
@@ -834,7 +945,7 @@ function update(dt) {
     if (s.trail.length > 5) s.trail.shift();
     s.x += s.vx * dt; s.y += s.vy * dt;
     // Kill shot if too far from player
-    if (Math.hypot(s.x - P.x, s.y - P.y) > 650) { s.life = 0; continue; }
+    if (Math.hypot(s.x - P.x, s.y - P.y) > CONFIG.projectileMaxRange) { s.life = 0; continue; }
     if (!s.enemy) {
       for (const e of enemies) {
         if (e.hp < 0 || s.life <= 0) continue;
@@ -858,7 +969,7 @@ function update(dt) {
     if (g.life <= 0) continue;
     g.vx *= Math.pow(0.25, dt); g.vy *= Math.pow(0.25, dt);
     const dx = P.x - g.x, dy = P.y - g.y, d2 = dx * dx + dy * dy, mr2 = P.mag * P.mag;
-    if (d2 < mr2) { const d = Math.sqrt(d2); const f = (1 - d / P.mag) * 380; g.vx += dx / d * f * dt; g.vy += dy / d * f * dt; }
+    if (d2 < mr2 && d2 > 0.01) { const d = Math.sqrt(d2); const f = (1 - d / P.mag) * 380; g.vx += dx / d * f * dt; g.vy += dy / d * f * dt; }
     g.x += g.vx * dt; g.y += g.vy * dt;
     const pr = P.r + g.r + 6;
     if (d2 < pr * pr) { gainXp(g.v); g.life = 0; }
@@ -887,7 +998,7 @@ function update(dt) {
   gems    = gems.filter(g => g.life > 0);
   parts   = parts.filter(p => p.life > 0);
   floats  = floats.filter(f => f.life > 0);
-  if (parts.length > 350) parts.length = 350;
+  if (parts.length > CONFIG.maxParticles) parts.length = CONFIG.maxParticles;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1229,6 +1340,7 @@ function buildGrass() {
 }
 
 // ── VIEWPORT CULL HELPER ──────────────────────────────────
+/** Returns true if world position (x,y) is within camera viewport + margin */
 function inView(x, y, margin) {
   return x >= camX - margin && x <= camX + canvas.width  + margin &&
          y >= camY - margin && y <= camY + canvas.height + margin;
@@ -1242,11 +1354,10 @@ function getWalkFrame() {
 // ── ORBITING BLADES ───────────────────────────────────────
 function drawBlades() {
   if (!P || P.bladeCount === 0) return;
-  const bladeR = 58;
   for (let i = 0; i < P.bladeCount; i++) {
     const ang = P.bladeAngle + (i / P.bladeCount) * TAU;
-    const bx = Math.round(P.x + Math.cos(ang) * bladeR);
-    const by = Math.round(P.y + Math.sin(ang) * bladeR);
+    const bx = Math.round(P.x + Math.cos(ang) * CONFIG.bladeOrbitRadius);
+    const by = Math.round(P.y + Math.sin(ang) * CONFIG.bladeOrbitRadius);
 
     ctx.save();
     ctx.translate(bx, by);
@@ -1275,12 +1386,12 @@ function drawBlades() {
 function drawEnemySprite(e) {
   ctx.save();
   let spr, scale;
-  if (e.type === 'goblin')   { spr = GOBLIN_SPR;  scale = SZ;     }
-  if (e.type === 'skeleton') { spr = SKEL_SPR;    scale = SZ;     }
-  if (e.type === 'troll')    { spr = TROLL_SPR;   scale = SZ + 1; }
-  if (e.type === 'archer')   { spr = ARCHER_SPR;  scale = SZ;     }
-  if (e.type === 'boss')     { spr = TROLL_SPR;   scale = SZ + 3; }
-  if (!spr) { ctx.restore(); return; }
+  if      (e.type === 'goblin')   { spr = GOBLIN_SPR;  scale = SZ;     }
+  else if (e.type === 'skeleton') { spr = SKEL_SPR;    scale = SZ;     }
+  else if (e.type === 'troll')    { spr = TROLL_SPR;   scale = SZ + 1; }
+  else if (e.type === 'archer')   { spr = ARCHER_SPR;  scale = SZ;     }
+  else if (e.type === 'boss')     { spr = TROLL_SPR;   scale = SZ + 3; }
+  else { ctx.restore(); return; }
 
   const flip  = e.vx < 0;
   const bob   = (Math.floor(elapsed / 0.15) % 2) * -1;
@@ -1593,16 +1704,16 @@ function render() {
 
   // ── HUD DOM UPDATES ──
   if (P) {
-    document.getElementById('xp-fill').style.width      = (P.xp / P.xpNext * 100) + '%';
-    document.getElementById('level-txt').textContent    = 'LV ' + P.level;
-    document.getElementById('kills-txt').textContent    = 'SLAIN ' + kills;
+    DOM.xpFill.style.width      = (P.xp / P.xpNext * 100) + '%';
+    DOM.levelTxt.textContent    = 'LV ' + P.level;
+    DOM.killsTxt.textContent    = 'SLAIN ' + kills;
     const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
-    document.getElementById('timer-txt').textContent    = m + ':' + String(s).padStart(2, '0');
-    document.getElementById('health-fill').style.width  = (P.hp / P.maxHp * 100) + '%';
+    DOM.timerTxt.textContent    = m + ':' + String(s).padStart(2, '0');
+    DOM.healthFill.style.width  = (P.hp / P.maxHp * 100) + '%';
     renderMinimap();
     drawBossBar();
-    document.getElementById('minimap').style.display       = 'block';
-    document.getElementById('minimap-label').style.display = 'block';
+    DOM.minimap.style.display       = 'block';
+    DOM.minimapLabel.style.display = 'block';
   }
 }
 

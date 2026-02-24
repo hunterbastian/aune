@@ -518,7 +518,8 @@ const DOM = {
 
 // ── INPUT ──────────────────────────────────────────────────
 const keys = {};
-window.addEventListener('keydown', e => { keys[e.code] = true; if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault(); });
+const PREVENT_DEFAULT_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space']);
+window.addEventListener('keydown', e => { keys[e.code] = true;  if (PREVENT_DEFAULT_KEYS.has(e.code)) e.preventDefault(); });
 window.addEventListener('keyup',   e => { keys[e.code] = false; });
 
 // ── ENEMY DEFINITIONS ─────────────────────────────────────
@@ -566,7 +567,6 @@ function mkPlayer() {
     shieldT: 0, shielded: false, shieldActiveT: 0,
     iframes: false, iframeT: 0,
     upgrades: [],
-    dx: 0, dy: 0,
     lastMX: 1,
     // Orbiting blades
     bladeCount: 0, bladeAngle: 0,
@@ -578,12 +578,20 @@ function mkPlayer() {
 /** @returns {Object} A new enemy spawned off-screen based on current wave */
 function mkEnemy() {
   const w = waveN;
+
+  // Build weighted spawn pool — weights shift toward tougher enemies at higher waves
   const pool = [];
-  for (let i=0;i<(w<3?8:w<6?5:w<10?3:2);i++) pool.push('goblin');
-  for (let i=0;i<(w<2?1:w<5?4:5);i++) pool.push('skeleton');
-  if (w>=3) for (let i=0;i<(w<7?2:4);i++) pool.push('troll');
-  if (w>=4) for (let i=0;i<3;i++) pool.push('archer');
-  const type = pool[Math.floor(Math.random()*pool.length)];
+  const goblinWeight   = w < 3 ? 8 : w < 6 ? 5 : w < 10 ? 3 : 2;
+  const skeletonWeight = w < 2 ? 1 : w < 5 ? 4 : 5;
+  const trollWeight    = w >= 3 ? (w < 7 ? 2 : 4) : 0;
+  const archerWeight   = w >= 4 ? 3 : 0;
+
+  for (let i = 0; i < goblinWeight;   i++) pool.push('goblin');
+  for (let i = 0; i < skeletonWeight; i++) pool.push('skeleton');
+  for (let i = 0; i < trollWeight;    i++) pool.push('troll');
+  for (let i = 0; i < archerWeight;   i++) pool.push('archer');
+
+  const type = pool[Math.floor(Math.random() * pool.length)];
   const d = ETYPE[type];
   // Radial spawn around the player
   const angle = Math.random() * TAU;
@@ -605,23 +613,45 @@ function mkEnemy() {
 }
 
 /** @returns {Object} XP gem at (x,y) worth v experience */
-function mkGem(x,y,v) {
-  return {x,y,vx:(Math.random()-.5)*50,vy:(Math.random()-.5)*50,v,r:4+Math.sqrt(v)*.4,life:1};
+function mkGem(x, y, v) {
+  return {
+    x, y, v,
+    vx: (Math.random() - .5) * 50,
+    vy: (Math.random() - .5) * 50,
+    r: 4 + Math.sqrt(v) * .4,
+    life: 1,
+  };
 }
+
 /** @returns {Object} Particle with random velocity, color, and decay rate */
-function mkPart(x,y,col,spd,sz,dec) {
-  return {x,y,vx:(Math.random()-.5)*spd,vy:(Math.random()-.5)*spd,r:sz,col,life:1,dec:dec||1};
+function mkPart(x, y, col, spd, sz, dec) {
+  return {
+    x, y, col,
+    vx: (Math.random() - .5) * spd,
+    vy: (Math.random() - .5) * spd,
+    r: sz,
+    life: 1,
+    dec: dec || 1,
+  };
 }
+
 /** @returns {Object} Floating damage/info text that rises and fades */
-function mkFloat(x,y,txt,col) {
-  return {x,y,txt,col,vy:-35,life:1,dec:1.4};
+function mkFloat(x, y, txt, col) {
+  return { x, y, txt, col, vy: -35, life: 1, dec: 1.4 };
 }
 
 // ── COMBAT ────────────────────────────────────────────────
 /** Circle-circle collision test using squared distances (no sqrt) */
-function overlap(a,b) { const dx=a.x-b.x,dy=a.y-b.y,r=a.r+b.r; return dx*dx+dy*dy<r*r; }
+function overlap(a, b) {
+  const dx = a.x - b.x, dy = a.y - b.y, r = a.r + b.r;
+  return dx * dx + dy * dy < r * r;
+}
+
 /** Squared distance between two points — avoids sqrt for comparisons */
-function dst2(a,b)    { const dx=a.x-b.x,dy=a.y-b.y; return dx*dx+dy*dy; }
+function dst2(a, b) {
+  const dx = a.x - b.x, dy = a.y - b.y;
+  return dx * dx + dy * dy;
+}
 
 /** Apply d damage to enemy e, triggering death at 0 HP */
 function hitEnemy(e, d) {
@@ -635,8 +665,8 @@ function hitEnemy(e, d) {
 /** Kill enemy, spawn death particles and XP gems */
 function killEnemy(e) {
   e.hp = -9999; kills++;
-  for (let i=0;i<14;i++) parts.push(mkPart(e.x,e.y,e.color,90+Math.random()*70,2+Math.random()*3,1.1));
-  for (let i=0;i<4;i++)  parts.push(mkPart(e.x,e.y,'#e0c080',50,4,1.5));
+  for (let i = 0; i < CONFIG.killParticleCount; i++) parts.push(mkPart(e.x, e.y, e.color, 90 + Math.random() * 70, 2 + Math.random() * 3, 1.1));
+  for (let i = 0; i < 4; i++) parts.push(mkPart(e.x, e.y, '#e0c080', 50, 4, 1.5));
   const n = Math.ceil(e.xp / 5);
   for (let i=0;i<n;i++) gems.push(mkGem(e.x, e.y, Math.ceil(e.xp / n)));
   shake(3);
@@ -672,7 +702,13 @@ function gainXp(v) {
 function showLevelUp() {
   sfxLevelUp();
   mode = 'levelup';
-  const picks = UPGRADES.slice().sort(() => Math.random() - .5).slice(0, 3);
+  // Fisher-Yates shuffle for unbiased random selection
+  const pool = UPGRADES.slice();
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const picks = pool.slice(0, 3);
   DOM.luSub.textContent = 'LEVEL ' + P.level + ' — CHOOSE A BOON';
   const cont = DOM.cards;
   while (cont.firstChild) cont.removeChild(cont.firstChild);

@@ -360,6 +360,95 @@
   }
   #btn-grim-back:hover { filter: brightness(1.12); }
 
+  /* Changelog button */
+  #btn-changelog {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: #3c1e0a;
+    background: #a08060;
+    border-top:    3px solid #c8a878;
+    border-left:   3px solid #c8a878;
+    border-right:  3px solid #604020;
+    border-bottom: 3px solid #604020;
+    padding: 6px 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: filter 0.1s;
+    text-shadow: 1px 1px rgba(255,255,255,0.3);
+  }
+  #btn-changelog:hover { filter: brightness(1.12); }
+  #btn-changelog:active {
+    border-top:    3px solid #604020;
+    border-left:   3px solid #604020;
+    border-right:  3px solid #c8a878;
+    border-bottom: 3px solid #c8a878;
+  }
+
+  /* Changelog overlay */
+  #changelog {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #140e08;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    padding: 24px 16px;
+    pointer-events: all;
+    z-index: 20;
+  }
+  #changelog.show { display: flex; }
+  #changelog h2 {
+    font-size: 14px;
+    color: #f0c040;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #3c1e0a, 3px 3px #a07020;
+  }
+  .cl-entries {
+    max-width: 480px;
+    width: 100%;
+  }
+  .cl-entry {
+    margin-bottom: 18px;
+  }
+  .cl-entry h3 {
+    font-size: 7px;
+    color: #a0d0ff;
+    margin-bottom: 6px;
+    text-shadow: 1px 1px #1a1020;
+  }
+  .cl-entry ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cl-entry li {
+    font-size: 6px;
+    color: #c0a880;
+    line-height: 2.2;
+    text-shadow: 1px 1px #0a0604;
+  }
+  .cl-entry li::before {
+    content: '- ';
+    color: #706040;
+  }
+  #btn-cl-back {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #3c1e0a;
+    background: #c89060;
+    border-top:    4px solid #f0c898;
+    border-left:   4px solid #f0c898;
+    border-right:  4px solid #7a4820;
+    border-bottom: 4px solid #7a4820;
+    padding: 8px 20px;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: filter 0.1s;
+    text-shadow: 1px 1px rgba(255,255,255,0.4);
+  }
+  #btn-cl-back:hover { filter: brightness(1.12); }
+
   /* Minimap */
   #minimap { display: none; }
   #minimap-label { display: none; }
@@ -461,6 +550,7 @@
   <p class="menu-sub">Wizard of the North</p>
   <button id="btn-start">ENTER AUNE</button>
   <button id="btn-grimoire">GRIMOIRE</button>
+  <button id="btn-changelog">CHANGELOG</button>
   <div class="menu-hint">
     WASD / ARROWS — MOVE<br>
     DEFEAT ENEMIES — GAIN XP<br>
@@ -500,6 +590,39 @@
     </div>
   </div>
   <button id="btn-grim-back">RETURN</button>
+</div>
+
+<div id="changelog">
+  <h2>CHANGELOG</h2>
+  <div class="cl-entries">
+    <div class="cl-entry">
+      <h3>v0.3 — LABYRINTH</h3>
+      <ul>
+        <li>Stone maze zone northeast of spawn</li>
+        <li>Wall collision for player, enemies, projectiles</li>
+        <li>Treasure chest with full heal + XP burst</li>
+        <li>Maze visible on minimap</li>
+      </ul>
+    </div>
+    <div class="cl-entry">
+      <h3>v0.2 — BIOMES &amp; GRIMOIRE</h3>
+      <ul>
+        <li>4 biomes: Greenwood, Frostmere, Bleakfell, Ashvault</li>
+        <li>Biome-specific enemies (draugr, wyrm)</li>
+        <li>Persistent souls + Grimoire shop</li>
+        <li>Runestones, Inscriptions, Words of Power</li>
+      </ul>
+    </div>
+    <div class="cl-entry">
+      <h3>v0.1 — FIRST LIGHT</h3>
+      <ul>
+        <li>Wizard survivor core loop</li>
+        <li>WASD movement, auto-fire projectiles</li>
+        <li>Wave spawning, XP gems, level-up boons</li>
+      </ul>
+    </div>
+  </div>
+  <button id="btn-cl-back">RETURN</button>
 </div>
 
 <script>
@@ -1279,6 +1402,12 @@ function renderWords() {
 
 document.getElementById('btn-grimoire').addEventListener('click', openGrimoire);
 document.getElementById('btn-grim-back').addEventListener('click', closeGrimoire);
+document.getElementById('btn-changelog').addEventListener('click', function() {
+  document.getElementById('changelog').classList.add('show');
+});
+document.getElementById('btn-cl-back').addEventListener('click', function() {
+  document.getElementById('changelog').classList.remove('show');
+});
 refreshMenuDisplay();
 
 // ── BOSS SPAWN ────────────────────────────────────────────

@@ -201,6 +201,165 @@
     text-shadow: 1px 1px #3c1e0a;
   }
 
+  #menu-souls {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-size: 7px;
+    color: #a0d0ff;
+    text-shadow: 1px 1px #1a1020;
+  }
+  .menu-sub {
+    font-size: 8px;
+    color: #f0d898;
+    margin-bottom: 28px;
+    text-shadow: 1px 1px #3c1e0a;
+  }
+  #btn-grimoire {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #3c1e0a;
+    background: #c89060;
+    border-top:    4px solid #f0c898;
+    border-left:   4px solid #f0c898;
+    border-right:  4px solid #7a4820;
+    border-bottom: 4px solid #7a4820;
+    padding: 8px 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: filter 0.1s;
+    text-shadow: 1px 1px rgba(255,255,255,0.4);
+  }
+  #btn-grimoire:hover { filter: brightness(1.12); }
+  #btn-grimoire:active {
+    border-top:    4px solid #7a4820;
+    border-left:   4px solid #7a4820;
+    border-right:  4px solid #f0c898;
+    border-bottom: 4px solid #f0c898;
+  }
+  #active-stone-display {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 6px;
+    color: #f0c040;
+    text-shadow: 1px 1px #3c1e0a;
+  }
+  .go-souls { margin-top: 16px; color: #a0d0ff; }
+
+  /* Grimoire overlay */
+  #grimoire {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #140e08;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    padding: 20px 12px;
+    pointer-events: all;
+    z-index: 20;
+  }
+  #grimoire.show { display: flex; }
+  #grimoire h2 {
+    font-size: 16px;
+    color: #a0d0ff;
+    margin-bottom: 4px;
+    text-shadow: 2px 2px #1a1020, 3px 3px #304060;
+  }
+  .grim-souls {
+    font-size: 8px;
+    color: #a0d0ff;
+    margin-bottom: 18px;
+    text-shadow: 1px 1px #1a1020;
+  }
+  .grim-sections {
+    display: flex;
+    gap: 18px;
+    max-width: 900px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .grim-section {
+    flex: 1;
+    min-width: 220px;
+    max-width: 280px;
+  }
+  .grim-section h3 {
+    font-size: 8px;
+    color: #f0c040;
+    margin-bottom: 4px;
+    text-shadow: 1px 1px #3c1e0a;
+  }
+  .grim-hint {
+    font-size: 5px;
+    color: #a09070;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px #1a0e04;
+  }
+  .grim-item {
+    padding: 10px 10px;
+    margin-bottom: 6px;
+    background: #3a2818;
+    border-top:    2px solid #6a4828;
+    border-left:   2px solid #6a4828;
+    border-right:  2px solid #201008;
+    border-bottom: 2px solid #201008;
+    cursor: pointer;
+    transition: filter 0.1s;
+  }
+  .grim-item:hover { filter: brightness(1.2); }
+  .grim-item.locked { opacity: 0.4; cursor: default; }
+  .grim-item.locked:hover { filter: none; }
+  .grim-item.active {
+    background: #4a3020;
+    border-top: 2px solid #f0c040;
+    border-left: 2px solid #f0c040;
+    border-right: 2px solid #a07020;
+    border-bottom: 2px solid #a07020;
+  }
+  .grim-item.owned { background: #3a2c1c; }
+  .grim-item.maxed { background: #2a2018; opacity: 0.7; }
+  .grim-item-name {
+    font-size: 6px;
+    color: #f0d898;
+    margin-bottom: 3px;
+    text-shadow: 1px 1px #1a0e04;
+  }
+  .grim-item-desc {
+    font-size: 5px;
+    color: #c0a070;
+    margin-bottom: 4px;
+    text-shadow: 1px 1px #1a0e04;
+  }
+  .grim-item-status, .grim-item-cost {
+    font-size: 5px;
+    color: #a0d0ff;
+    text-shadow: 1px 1px #1a1020;
+  }
+  .grim-item-level {
+    font-size: 5px;
+    color: #f0c040;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px #1a0e04;
+  }
+  #btn-grim-back {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #3c1e0a;
+    background: #c89060;
+    border-top:    4px solid #f0c898;
+    border-left:   4px solid #f0c898;
+    border-right:  4px solid #7a4820;
+    border-bottom: 4px solid #7a4820;
+    padding: 8px 20px;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: filter 0.1s;
+    text-shadow: 1px 1px rgba(255,255,255,0.4);
+  }
+  #btn-grim-back:hover { filter: brightness(1.12); }
+
   /* Minimap */
   #minimap { display: none; }
   #minimap-label { display: none; }
@@ -275,9 +434,11 @@
   <div id="info-left">
     <div id="level-txt">LEVEL 1</div>
     <div id="kills-txt">SLAIN: 0</div>
+    <div id="wave-txt">WAVE 1</div>
   </div>
   <div id="info-right">
     <div id="timer-txt">0:00</div>
+    <div id="biome-txt">GREENWOOD</div>
   </div>
   <div id="health-wrap">
     <div id="health-label">HEALTH</div>
@@ -295,13 +456,17 @@
 </div>
 
 <div id="menu">
+  <div id="menu-souls">SOULS: <span id="soul-count">0</span></div>
   <h1>AUNE</h1>
+  <p class="menu-sub">Wizard of the North</p>
   <button id="btn-start">ENTER AUNE</button>
+  <button id="btn-grimoire">GRIMOIRE</button>
   <div class="menu-hint">
     WASD / ARROWS — MOVE<br>
     DEFEAT ENEMIES — GAIN XP<br>
     SURVIVE THE ENDLESS DARK
   </div>
+  <div id="active-stone-display"></div>
 </div>
 
 <div id="gameover">
@@ -309,7 +474,32 @@
   <div class="go-stat">TIME IN AUNE &nbsp;<span class="go-val" id="go-time">0:00</span></div>
   <div class="go-stat">ENEMIES SLAIN &nbsp;<span class="go-val" id="go-kills">0</span></div>
   <div class="go-stat">LEVEL REACHED &nbsp;<span class="go-val" id="go-level">1</span></div>
+  <div class="go-stat">WAVE REACHED &nbsp;<span class="go-val" id="go-wave">1</span></div>
+  <div class="go-stat go-souls">SOULS GAINED &nbsp;<span class="go-val" id="go-souls" style="color:#a0d0ff;">0</span></div>
   <button id="btn-retry" style="margin-top:32px">RETURN TO AUNE</button>
+</div>
+
+<div id="grimoire">
+  <h2>GRIMOIRE</h2>
+  <div class="grim-souls">SOULS: <span id="grim-soul-count">0</span></div>
+  <div class="grim-sections">
+    <div class="grim-section">
+      <h3>RUNESTONES</h3>
+      <p class="grim-hint">Choose one active stone per run</p>
+      <div id="grim-stones"></div>
+    </div>
+    <div class="grim-section">
+      <h3>INSCRIPTIONS</h3>
+      <p class="grim-hint">Permanent power carved in rune</p>
+      <div id="grim-inscriptions"></div>
+    </div>
+    <div class="grim-section">
+      <h3>WORDS OF POWER</h3>
+      <p class="grim-hint">Earned by slaying great beasts</p>
+      <div id="grim-words"></div>
+    </div>
+  </div>
+  <button id="btn-grim-back">RETURN</button>
 </div>
 
 <script>
@@ -319,7 +509,7 @@ const TAU = Math.PI * 2;
 
 function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
 resize();
-window.addEventListener('resize', () => { resize(); buildGrass(); });
+window.addEventListener('resize', () => { resize(); buildGrass(currentBiome); });
 
 // ── WEB AUDIO ─────────────────────────────────────────────
 let AC = null;
@@ -372,6 +562,21 @@ function sfxHurt() {
   playTone('sawtooth', 120, 0.12, 0.18, true, 0);
   playTone('square',   80,  0.09, 0.22, true, 0);
 }
+function sfxChest() {
+  [660, 880, 1100, 1320].forEach((f, i) => {
+    setTimeout(() => playTone('sine', f, 0.07, 0.2, true, 0), i * 70);
+  });
+  setTimeout(() => playTone('sine', 1760, 0.05, 0.4, true, 0), 320);
+}
+function sfxFrostBreath() {
+  playTone('sawtooth', 90, 0.06, 0.3, true, 20);
+  playTone('sine', 200, 0.04, 0.25, true, -10);
+}
+function sfxWyrmDeath() {
+  [180, 120, 80, 55].forEach((f, i) => {
+    setTimeout(() => playTone('sawtooth', f, 0.10, 0.25, true, 0), i * 80);
+  });
+}
 
 // ── MINIMAP ────────────────────────────────────────────────
 const mmCanvas = document.getElementById('mm');
@@ -387,12 +592,32 @@ function renderMinimap() {
     x: Math.round((wx - P.x) / MM_VIEW * MM_W + MM_W / 2),
     y: Math.round((wy - P.y) / MM_VIEW * MM_H + MM_H / 2),
   });
+  // Maze walls on minimap
+  if (mazeGrid) {
+    mmCtx.fillStyle = '#4a4238';
+    const scale = MM_W / MM_VIEW;
+    const ox = (MAZE_OX - P.x) * scale + MM_W / 2;
+    const oy = (MAZE_OY - P.y) * scale + MM_H / 2;
+    const ts = TILE * scale;
+    if (ox + MAZE_COLS * ts > 0 && ox < MM_W && oy + MAZE_ROWS * ts > 0 && oy < MM_H) {
+      for (let r = 0; r < MAZE_ROWS; r++) {
+        for (let c = 0; c < MAZE_COLS; c++) {
+          if (mazeGrid[r * MAZE_COLS + c] !== 1) continue;
+          const mx = ox + c * ts, my = oy + r * ts;
+          if (mx > MM_W || my > MM_H || mx + ts < 0 || my + ts < 0) continue;
+          mmCtx.fillRect(mx, my, Math.max(1, ts), Math.max(1, ts));
+        }
+      }
+    }
+  }
   for (const e of enemies) {
     if (e.hp < 0) continue;
     const m = toMM(e.x, e.y);
     if (m.x < 0 || m.x > MM_W || m.y < 0 || m.y > MM_H) continue;
     mmCtx.fillStyle = e.type === 'boss'     ? '#ff4040' :
+                      e.type === 'wyrm'     ? '#40c0ff' :
                       e.type === 'troll'    ? '#a060d0' :
+                      e.type === 'draugr'   ? '#6090b0' :
                       e.type === 'skeleton' ? '#d0d0b0' :
                       e.type === 'archer'   ? '#d08020' : '#60c020';
     mmCtx.fillRect(m.x - 1, m.y - 1, 3, 3);
@@ -434,7 +659,138 @@ const ETYPE = {
   troll:    { label: 'Troll',    color: '#5a3a8a', r: 20, spd: 30,  hp: 130, xp: 35, dmg: 22 },
   archer:   { label: 'Archer',   color: '#8a5020', r: 9,  spd: 42,  hp: 20,  xp: 15, dmg: 9  },
   boss:     { label: 'BOSS',     color: '#800020', r: 34, spd: 48,  hp: 800, xp: 300, dmg: 38 },
+  draugr:   { label: 'Draugr',     color: '#6088a8', r: 12, spd: 50,  hp: 55,  xp: 18, dmg: 14 },
+  wyrm:     { label: 'Frost Wyrm', color: '#40a0d0', r: 30, spd: 38,  hp: 600, xp: 250, dmg: 32 },
 };
+
+// ── BIOMES ───────────────────────────────────────────────
+const BIOMES = [
+  {
+    id: 'greenwood', name: 'GREENWOOD', waveStart: 1,
+    bases:  ['#4a7a28','#5a8a30','#3a6a18','#4a7020','#5a8a38','#4a8030','#3a7020','#4a8028'],
+    lights: ['#8ab850','#9ac858','#7aa840'],
+    darks:  ['#2a5810','#1a4808','#2a6218'],
+    dirtA: '#8a6830', dirtB: '#6a4820',
+    tintColor: null,
+    enemyPool: (w) => {
+      const pool = [];
+      for (let i=0;i<(w<3?8:w<6?5:3);i++) pool.push('goblin');
+      for (let i=0;i<(w<2?1:4);i++) pool.push('skeleton');
+      if (w>=3) for (let i=0;i<2;i++) pool.push('troll');
+      if (w>=4) for (let i=0;i<3;i++) pool.push('archer');
+      return pool;
+    },
+    bossType: 'boss',
+    bossLabel: '!! GREENWOOD TREMBLES !!',
+  },
+  {
+    id: 'frostmere', name: 'FROSTMERE', waveStart: 10,
+    bases:  ['#d0dce8','#c8d8e0','#b8c8d8','#c0d0e0','#d8e4f0','#c8d4e0','#b0c8d0','#c4d8e0'],
+    lights: ['#e8f0f8','#f0f8ff','#e0e8f0'],
+    darks:  ['#8098a8','#7090a0','#88a0b0'],
+    dirtA: '#a0b0c0', dirtB: '#8098a8',
+    tintColor: 'rgba(180,210,240,0.08)',
+    enemyPool: (w) => {
+      const pool = [];
+      for (let i=0;i<2;i++) pool.push('goblin');
+      for (let i=0;i<4;i++) pool.push('skeleton');
+      for (let i=0;i<3;i++) pool.push('draugr');
+      if (w>=12) for (let i=0;i<2;i++) pool.push('troll');
+      for (let i=0;i<2;i++) pool.push('archer');
+      return pool;
+    },
+    bossType: 'wyrm',
+    bossLabel: '!! THE WYRM AWAKENS !!',
+  },
+  {
+    id: 'bleakfell', name: 'BLEAKFELL', waveStart: 20,
+    bases:  ['#506878','#405868','#384858','#486070','#587080','#486068','#385060','#507078'],
+    lights: ['#708898','#8098a8','#688090'],
+    darks:  ['#203040','#182830','#283848'],
+    dirtA: '#384850', dirtB: '#283840',
+    tintColor: 'rgba(100,140,180,0.12)',
+    enemyPool: (w) => {
+      const pool = [];
+      for (let i=0;i<1;i++) pool.push('goblin');
+      for (let i=0;i<3;i++) pool.push('skeleton');
+      for (let i=0;i<5;i++) pool.push('draugr');
+      for (let i=0;i<3;i++) pool.push('troll');
+      for (let i=0;i<2;i++) pool.push('archer');
+      return pool;
+    },
+    bossType: 'wyrm',
+    bossLabel: '!! BLEAKFELL HOWLS !!',
+  },
+  {
+    id: 'ashvault', name: 'ASHVAULT', waveStart: 30,
+    bases:  ['#282028','#302830','#201820','#282428','#382838','#302430','#201c20','#302830'],
+    lights: ['#484048','#504850','#403840'],
+    darks:  ['#100810','#080408','#180c18'],
+    dirtA: '#403030', dirtB: '#302020',
+    tintColor: 'rgba(60,20,10,0.10)',
+    enemyPool: (w) => {
+      const pool = [];
+      for (let i=0;i<2;i++) pool.push('skeleton');
+      for (let i=0;i<6;i++) pool.push('draugr');
+      for (let i=0;i<4;i++) pool.push('troll');
+      for (let i=0;i<3;i++) pool.push('archer');
+      return pool;
+    },
+    bossType: 'wyrm',
+    bossLabel: '!! THE ASHVAULT BURNS !!',
+  },
+];
+
+function getBiome(wave) {
+  for (let i = BIOMES.length - 1; i >= 0; i--) {
+    if (wave >= BIOMES[i].waveStart) return i;
+  }
+  return 0;
+}
+
+// ── SAVE SYSTEM ──────────────────────────────────────────
+const SAVE_KEY = 'aune_grimoire';
+const DEFAULT_SAVE = {
+  souls: 0,
+  runestones: { warrior: false, mage: false, thief: false, ritual: false },
+  activeStone: null,
+  inscriptions: { hp: 0, dmg: 0, spd: 0, mag: 0 },
+  bossesKilled: 0,
+  wordsUnlocked: { frost: false, vigor: false, might: false },
+  highWave: 0,
+  totalKills: 0,
+};
+function loadSave() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return { ...DEFAULT_SAVE, runestones: {...DEFAULT_SAVE.runestones}, inscriptions: {...DEFAULT_SAVE.inscriptions}, wordsUnlocked: {...DEFAULT_SAVE.wordsUnlocked} };
+    const s = JSON.parse(raw);
+    return { ...DEFAULT_SAVE, ...s, runestones: {...DEFAULT_SAVE.runestones, ...s.runestones}, inscriptions: {...DEFAULT_SAVE.inscriptions, ...s.inscriptions}, wordsUnlocked: {...DEFAULT_SAVE.wordsUnlocked, ...s.wordsUnlocked} };
+  } catch(e) { return { ...DEFAULT_SAVE, runestones: {...DEFAULT_SAVE.runestones}, inscriptions: {...DEFAULT_SAVE.inscriptions}, wordsUnlocked: {...DEFAULT_SAVE.wordsUnlocked} }; }
+}
+function writeSave(s) {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+let save = loadSave();
+
+// ── META-PROGRESSION CONFIGS ─────────────────────────────
+const RUNESTONES = [
+  { id: 'warrior', name: 'WARRIOR STONE', desc: '+10% starting damage',  cost: 0,   apply: p => { p.dmg = Math.floor(p.dmg * 1.10); } },
+  { id: 'mage',    name: 'MAGE STONE',    desc: '+15% cast speed',       cost: 50,  apply: p => { p.rate *= 0.85; } },
+  { id: 'thief',   name: 'THIEF STONE',   desc: '+20% movement speed',   cost: 100, apply: p => { p.spd = Math.floor(p.spd * 1.20); } },
+  { id: 'ritual',  name: 'RITUAL STONE',  desc: '+25% XP gain',          cost: 150, apply: p => { p.xpMult = (p.xpMult || 1) * 1.25; } },
+];
+const INSCRIPTIONS = [
+  { id: 'hp',  name: 'VITAL RUNE',  desc: '+5 max HP',        cost: 30, max: 5, apply: (p, n) => { p.maxHp += 5 * n; p.hp += 5 * n; } },
+  { id: 'dmg', name: 'STRIKE RUNE', desc: '+2 damage',        cost: 40, max: 5, apply: (p, n) => { p.dmg += 2 * n; } },
+  { id: 'spd', name: 'WIND RUNE',   desc: '+5 speed',         cost: 35, max: 5, apply: (p, n) => { p.spd += 5 * n; } },
+  { id: 'mag', name: 'PULL RUNE',   desc: '+10 magnet range', cost: 25, max: 5, apply: (p, n) => { p.mag += 10 * n; } },
+];
+const WORDS_OF_POWER = [
+  { id: 'frost', name: 'VOICE OF FROST', desc: 'Projectiles slow foes briefly',  threshold: 5  },
+  { id: 'vigor', name: 'NORDIC VIGOR',   desc: 'Start with a free shield',       threshold: 15 },
+  { id: 'might', name: 'ANCIENT MIGHT',  desc: '+1 starting projectile',         threshold: 30 },
+];
 
 // ── UPGRADES ──────────────────────────────────────────────
 const UPGRADES = [
@@ -457,13 +813,56 @@ let P, enemies, shots, gems, parts, floats;
 let elapsed, kills, lastT, waveN, spawnT, shakeAmt, shakeX, shakeY;
 let camX = 0, camY = 0;
 let damageFlash = 0;
+let currentBiome = 0, currentBiomeId = 'greenwood';
+let runKills = 0, runBossKills = 0;
+
+// ── LABYRINTH ────────────────────────────────────────────
+const MAZE_COLS = 41, MAZE_ROWS = 41;
+const MAZE_OX = 600, MAZE_OY = -500;
+const MAZE_TILE = 24;
+const MAZE_W = MAZE_COLS * MAZE_TILE, MAZE_H = MAZE_ROWS * MAZE_TILE;
+let mazeGrid = null, mazeCvs = null, mazeChest = null;
+
+function generateMaze() {
+  const grid = new Uint8Array(MAZE_COLS * MAZE_ROWS);
+  grid.fill(1);
+  const idx = (c, r) => r * MAZE_COLS + c;
+  let seed = (Math.random() * 2147483646 | 0) + 1;
+  const srand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  grid[idx(1, 1)] = 0;
+  const stack = [[1, 1]];
+  const dirs = [[0,-2],[0,2],[-2,0],[2,0]];
+  while (stack.length > 0) {
+    const [cx, cy] = stack[stack.length - 1];
+    const nb = [];
+    for (const [dx, dy] of dirs) {
+      const nx = cx + dx, ny = cy + dy;
+      if (nx > 0 && nx < MAZE_COLS - 1 && ny > 0 && ny < MAZE_ROWS - 1 && grid[idx(nx, ny)] === 1)
+        nb.push([nx, ny, cx + dx / 2, cy + dy / 2]);
+    }
+    if (nb.length === 0) { stack.pop(); continue; }
+    const p = nb[Math.floor(srand() * nb.length)];
+    grid[idx(p[0], p[1])] = 0;
+    grid[idx(p[2], p[3])] = 0;
+    stack.push([p[0], p[1]]);
+  }
+  // Entrances — south and north, 3 tiles wide
+  const mid = Math.floor(MAZE_COLS / 2);
+  for (let d = -1; d <= 1; d++) {
+    grid[idx(mid + d, 0)] = 0;
+    grid[idx(mid + d, 1)] = 0;
+    grid[idx(mid + d, MAZE_ROWS - 1)] = 0;
+    grid[idx(mid + d, MAZE_ROWS - 2)] = 0;
+  }
+  return grid;
+}
 
 function mkPlayer() {
   return {
     x: 0, y: 0,
     r: 13, spd: 115, maxHp: 100, hp: 100,
     level: 1, xp: 0, xpNext: 20,
-    dmg: 18, rate: 0.85, fireT: 0,
+    dmg: 18, rate: 0.85, fireT: 0, xpMult: 1,
     count: 1, aoe: false, aoeR: 40,
     mag: 75, regen: 0, regenT: 0,
     shieldOn: false, shieldDur: 1.2, shieldCD: 12,
@@ -481,11 +880,8 @@ function mkPlayer() {
 // ── FACTORIES ─────────────────────────────────────────────
 function mkEnemy() {
   const w = waveN;
-  const pool = [];
-  for (let i=0;i<(w<3?8:w<6?5:w<10?3:2);i++) pool.push('goblin');
-  for (let i=0;i<(w<2?1:w<5?4:5);i++) pool.push('skeleton');
-  if (w>=3) for (let i=0;i<(w<7?2:4);i++) pool.push('troll');
-  if (w>=4) for (let i=0;i<3;i++) pool.push('archer');
+  const biome = BIOMES[currentBiome];
+  const pool = biome.enemyPool(w);
   const type = pool[Math.floor(Math.random()*pool.length)];
   const d = ETYPE[type];
   // Radial spawn around the player
@@ -526,17 +922,35 @@ function hitEnemy(e, d) {
   e.flash = 0.25;
   floats.push(mkFloat(e.x, e.y - e.r, '-' + Math.ceil(d), '#fff'));
   sfxHit();
+  // Voice of Frost: slow enemies on player projectile hits
+  if (save.wordsUnlocked.frost) e.slowT = (e.slowT || 0) + 0.8;
   if (e.hp <= 0) killEnemy(e);
 }
 
 function killEnemy(e) {
-  e.hp = -9999; kills++;
-  for (let i=0;i<14;i++) parts.push(mkPart(e.x,e.y,e.color,90+Math.random()*70,2+Math.random()*3,1.1));
+  e.hp = -9999; kills++; runKills++;
+  // Frost-tinted particles for frost enemies
+  const pCol = (e.type === 'draugr' || e.type === 'wyrm') ? '#80c0e0' : e.color;
+  for (let i=0;i<14;i++) parts.push(mkPart(e.x,e.y,pCol,90+Math.random()*70,2+Math.random()*3,1.1));
   for (let i=0;i<4;i++)  parts.push(mkPart(e.x,e.y,'#e0c080',50,4,1.5));
   const n = Math.ceil(e.xp / 5);
   for (let i=0;i<n;i++) gems.push(mkGem(e.x, e.y, Math.ceil(e.xp / n)));
   shake(3);
-  sfxKill();
+  if (e.type === 'wyrm') { sfxWyrmDeath(); shake(8); } else sfxKill();
+  if (e.isBoss) {
+    runBossKills++;
+    save.bossesKilled++;
+    for (const w of WORDS_OF_POWER) {
+      if (!save.wordsUnlocked[w.id] && save.bossesKilled >= w.threshold) {
+        save.wordsUnlocked[w.id] = true;
+        floats.push(mkFloat(P.x, P.y - 60, 'WORD: ' + w.name, '#a0d0ff'));
+        playTone('sine', 440, 0.08, 0.3, true, 0);
+        setTimeout(() => playTone('sine', 660, 0.06, 0.3, true, 0), 150);
+        setTimeout(() => playTone('sine', 880, 0.05, 0.4, true, 0), 300);
+      }
+    }
+    writeSave(save);
+  }
 }
 
 function hurtPlayer(amt) {
@@ -553,7 +967,7 @@ function shake(m) { shakeAmt = Math.max(shakeAmt, m); }
 
 function gainXp(v) {
   sfxGem();
-  P.xp += v;
+  P.xp += Math.floor(v * (P.xpMult || 1));
   while (P.xp >= P.xpNext) {
     P.xp -= P.xpNext;
     P.level++;
@@ -622,6 +1036,22 @@ function fireArrow(e) {
   shots.push({x:e.x,y:e.y,vx:(dx/d)*190,vy:(dy/d)*190,r:4,dmg:e.dmg*.55,life:1,enemy:true,trail:[]});
 }
 
+function fireFrostBreath(e) {
+  const dx = P.x - e.x, dy = P.y - e.y, d = Math.sqrt(dx*dx + dy*dy);
+  if (!d) return;
+  const base = Math.atan2(dy, dx);
+  for (let i = 0; i < 5; i++) {
+    const a = base + (i / 4 - 0.5) * 0.6;
+    shots.push({
+      x: e.x, y: e.y,
+      vx: Math.cos(a) * 160, vy: Math.sin(a) * 160,
+      r: 5, dmg: e.dmg * 0.35, life: 1, enemy: true,
+      frost: true, trail: [],
+    });
+  }
+  sfxFrostBreath();
+}
+
 function explode(x, y, r, d) {
   enemies.forEach(e => {
     if (e.hp < 0) return;
@@ -634,14 +1064,33 @@ function explode(x, y, r, d) {
 
 // ── GAME FLOW ─────────────────────────────────────────────
 function startGame() {
+  save = loadSave();
   P = mkPlayer();
+  // Apply persistent bonuses
+  if (save.activeStone) {
+    const stone = RUNESTONES.find(r => r.id === save.activeStone);
+    if (stone) stone.apply(P);
+  }
+  for (const insc of INSCRIPTIONS) {
+    const n = save.inscriptions[insc.id] || 0;
+    if (n > 0) insc.apply(P, n);
+  }
+  if (save.wordsUnlocked.vigor) { P.shieldOn = true; P.shielded = true; P.shieldActiveT = P.shieldDur; }
+  if (save.wordsUnlocked.might) { P.count += 1; }
   enemies = []; shots = []; gems = []; parts = []; floats = [];
   elapsed = 0; kills = 0; waveN = 1; spawnT = 0;
   shakeAmt = 0; shakeX = 0; shakeY = 0;
   camX = 0; camY = 0;
   waveBannerTimer = 0; damageFlash = 0;
   lastT = null; mode = 'play';
-  buildGrass();
+  currentBiome = 0; currentBiomeId = 'greenwood';
+  runKills = 0; runBossKills = 0;
+  buildGrass(0);
+  mazeGrid = generateMaze();
+  buildMazeCanvas();
+  mazeChest = { x: MAZE_OX + Math.floor(MAZE_COLS / 2) * TILE + TILE / 2,
+                y: MAZE_OY + Math.floor(MAZE_ROWS / 2) * TILE + TILE / 2,
+                collected: false };
   document.getElementById('menu').style.display = 'none';
   document.getElementById('gameover').classList.remove('show');
   document.getElementById('levelup').classList.remove('show');
@@ -653,10 +1102,19 @@ function startGame() {
 
 function gameOver() {
   mode = 'over';
+  // Calculate souls
+  const soulGain = runKills + (runBossKills * 5) + (P.level * 2);
+  save.souls += soulGain;
+  save.highWave = Math.max(save.highWave, waveN);
+  save.totalKills += runKills;
+  writeSave(save);
+
   const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
   document.getElementById('go-time').textContent = m + ':' + String(s).padStart(2, '0');
   document.getElementById('go-kills').textContent = kills;
   document.getElementById('go-level').textContent = P.level;
+  document.getElementById('go-wave').textContent = waveN;
+  document.getElementById('go-souls').textContent = '+' + soulGain;
   document.getElementById('gameover').classList.add('show');
   document.getElementById('minimap').style.display = 'none';
   document.getElementById('minimap-label').style.display = 'none';
@@ -666,38 +1124,210 @@ function gameOver() {
 }
 
 document.getElementById('btn-start').addEventListener('click', startGame);
-document.getElementById('btn-retry').addEventListener('click', startGame);
+document.getElementById('btn-retry').addEventListener('click', () => {
+  document.getElementById('menu').style.display = '';
+  document.getElementById('gameover').classList.remove('show');
+  refreshMenuDisplay();
+});
+
+// ── GRIMOIRE SYSTEM ──────────────────────────────────────
+function refreshMenuDisplay() {
+  save = loadSave();
+  document.getElementById('soul-count').textContent = save.souls;
+  const stoneEl = document.getElementById('active-stone-display');
+  while (stoneEl.firstChild) stoneEl.removeChild(stoneEl.firstChild);
+  if (save.activeStone) {
+    const rs = RUNESTONES.find(r => r.id === save.activeStone);
+    if (rs) stoneEl.textContent = rs.name + ' active';
+  }
+}
+
+function openGrimoire() {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('grimoire').classList.add('show');
+  refreshGrimoire();
+}
+
+function closeGrimoire() {
+  document.getElementById('grimoire').classList.remove('show');
+  document.getElementById('menu').style.display = '';
+  refreshMenuDisplay();
+}
+
+function refreshGrimoire() {
+  save = loadSave();
+  document.getElementById('grim-soul-count').textContent = save.souls;
+  renderRunestones();
+  renderInscriptions();
+  renderWords();
+}
+
+function renderRunestones() {
+  const container = document.getElementById('grim-stones');
+  while (container.firstChild) container.removeChild(container.firstChild);
+  RUNESTONES.forEach(rs => {
+    const owned = save.runestones[rs.id];
+    const active = save.activeStone === rs.id;
+    const canAfford = save.souls >= rs.cost;
+    const item = document.createElement('div');
+    item.className = 'grim-item';
+    if (active) item.classList.add('active');
+    else if (owned) item.classList.add('owned');
+    else if (!canAfford) item.classList.add('locked');
+    const nameEl = document.createElement('div');
+    nameEl.className = 'grim-item-name';
+    nameEl.textContent = rs.name;
+    item.appendChild(nameEl);
+    const descEl = document.createElement('div');
+    descEl.className = 'grim-item-desc';
+    descEl.textContent = rs.desc;
+    item.appendChild(descEl);
+    const statusEl = document.createElement('div');
+    statusEl.className = 'grim-item-status';
+    if (active) statusEl.textContent = 'ACTIVE';
+    else if (owned) statusEl.textContent = 'ACTIVATE';
+    else if (rs.cost === 0) statusEl.textContent = 'FREE';
+    else statusEl.textContent = rs.cost + ' SOULS';
+    item.appendChild(statusEl);
+    item.addEventListener('click', () => {
+      if (active) return;
+      if (owned) {
+        save.activeStone = rs.id;
+        writeSave(save);
+        refreshGrimoire();
+        playTone('sine', 660, 0.08, 0.15);
+      } else if (canAfford) {
+        save.souls -= rs.cost;
+        save.runestones[rs.id] = true;
+        save.activeStone = rs.id;
+        writeSave(save);
+        refreshGrimoire();
+        playTone('sine', 880, 0.08, 0.15);
+      }
+    });
+    container.appendChild(item);
+  });
+}
+
+function renderInscriptions() {
+  const container = document.getElementById('grim-inscriptions');
+  while (container.firstChild) container.removeChild(container.firstChild);
+  INSCRIPTIONS.forEach(ins => {
+    const level = save.inscriptions[ins.id] || 0;
+    const maxed = level >= ins.max;
+    const cost = ins.cost * (level + 1);
+    const canAfford = save.souls >= cost;
+    const item = document.createElement('div');
+    item.className = 'grim-item';
+    if (maxed) item.classList.add('maxed');
+    else if (!canAfford) item.classList.add('locked');
+    const nameEl = document.createElement('div');
+    nameEl.className = 'grim-item-name';
+    nameEl.textContent = ins.name;
+    item.appendChild(nameEl);
+    const descEl = document.createElement('div');
+    descEl.className = 'grim-item-desc';
+    descEl.textContent = ins.desc;
+    item.appendChild(descEl);
+    const levelEl = document.createElement('div');
+    levelEl.className = 'grim-item-level';
+    levelEl.textContent = level + ' / ' + ins.max;
+    item.appendChild(levelEl);
+    const statusEl = document.createElement('div');
+    statusEl.className = 'grim-item-status';
+    if (maxed) statusEl.textContent = 'MAXED';
+    else statusEl.textContent = cost + ' SOULS';
+    item.appendChild(statusEl);
+    item.addEventListener('click', () => {
+      if (maxed || !canAfford) return;
+      save.souls -= cost;
+      save.inscriptions[ins.id] = level + 1;
+      writeSave(save);
+      refreshGrimoire();
+      playTone('sine', 550, 0.08, 0.15);
+    });
+    container.appendChild(item);
+  });
+}
+
+function renderWords() {
+  const container = document.getElementById('grim-words');
+  while (container.firstChild) container.removeChild(container.firstChild);
+  WORDS_OF_POWER.forEach(w => {
+    const unlocked = save.wordsUnlocked[w.id];
+    const progress = Math.min(save.bossesKilled, w.threshold);
+    const item = document.createElement('div');
+    item.className = 'grim-item';
+    if (unlocked) item.classList.add('owned');
+    else item.classList.add('locked');
+    const nameEl = document.createElement('div');
+    nameEl.className = 'grim-item-name';
+    nameEl.textContent = w.name;
+    item.appendChild(nameEl);
+    const descEl = document.createElement('div');
+    descEl.className = 'grim-item-desc';
+    descEl.textContent = w.desc;
+    item.appendChild(descEl);
+    const statusEl = document.createElement('div');
+    statusEl.className = 'grim-item-status';
+    if (unlocked) statusEl.textContent = 'UNLOCKED';
+    else statusEl.textContent = progress + ' / ' + w.threshold + ' BOSSES';
+    item.appendChild(statusEl);
+    container.appendChild(item);
+  });
+}
+
+document.getElementById('btn-grimoire').addEventListener('click', openGrimoire);
+document.getElementById('btn-grim-back').addEventListener('click', closeGrimoire);
+refreshMenuDisplay();
 
 // ── BOSS SPAWN ────────────────────────────────────────────
 function spawnBoss() {
-  const d = ETYPE.boss;
+  const biome = BIOMES[currentBiome];
+  const bossType = biome.bossType;
+  const d = ETYPE[bossType];
   const scale = 1 + waveN * 0.08;
-  // Radial spawn around player
   const angle = Math.random() * TAU;
   const dist = Math.max(canvas.width, canvas.height) * 0.6;
   const x = P.x + Math.cos(angle) * dist;
   const y = P.y + Math.sin(angle) * dist;
   enemies.push({
-    type: 'boss', x, y, r: d.r,
+    type: bossType, x, y, r: d.r,
     spd: d.spd * (1 + waveN * 0.02),
     maxHp: Math.floor(d.hp * scale), hp: Math.floor(d.hp * scale),
     xp: d.xp, dmg: d.dmg * (1 + waveN * 0.05),
     color: d.color,
     fireT: 3 + Math.random() * 2, flash: 0, vx: 0, vy: 0,
-    isBoss: true,
+    isBoss: true, breathT: 0,
   });
   const el = document.getElementById('wave-banner');
-  el.textContent = '!! AUNE SHAKES !!';
-  el.style.color = '#ff4040';
+  el.textContent = biome.bossLabel;
+  el.style.color = bossType === 'wyrm' ? '#40c0ff' : '#ff4040';
   el.classList.add('show');
   waveBannerTimer = 3;
-  playTone('sawtooth', 80, 0.12, 0.5, true, 0);
-  setTimeout(() => playTone('sawtooth', 60, 0.15, 0.7, true, 0), 300);
-  setTimeout(() => playTone('square', 110, 0.08, 0.4, true, 0), 600);
+  if (bossType === 'wyrm') {
+    playTone('sine', 100, 0.12, 0.6, true, 0);
+    setTimeout(() => playTone('sine', 80, 0.15, 0.8, true, 0), 300);
+    setTimeout(() => playTone('sine', 60, 0.10, 0.5, true, 0), 600);
+  } else {
+    playTone('sawtooth', 80, 0.12, 0.5, true, 0);
+    setTimeout(() => playTone('sawtooth', 60, 0.15, 0.7, true, 0), 300);
+    setTimeout(() => playTone('square', 110, 0.08, 0.4, true, 0), 600);
+  }
 }
 
 // ── WAVE ANNOUNCE ─────────────────────────────────────────
 let waveBannerTimer = 0;
+function showBiomeBanner(name) {
+  const el = document.getElementById('wave-banner');
+  el.textContent = '~ ENTERING ' + name + ' ~';
+  el.style.color = '#a0d0ff';
+  waveBannerTimer = 3.5;
+  el.classList.add('show');
+  playTone('sine', 220, 0.06, 0.6, true, 0);
+  setTimeout(() => playTone('sine', 330, 0.05, 0.5, true, 0), 200);
+  setTimeout(() => playTone('sine', 440, 0.04, 0.4, true, 0), 400);
+}
 function showWave(n) {
   const el = document.getElementById('wave-banner');
   el.textContent = '~ AUNE WAVE ' + n + ' ~';
@@ -730,6 +1360,14 @@ function update(dt) {
   const nw = Math.floor(elapsed / 20) + 1;
   if (nw > waveN) {
     waveN = nw;
+    // Biome transition
+    const newBiomeIdx = getBiome(nw);
+    if (newBiomeIdx !== currentBiome) {
+      currentBiome = newBiomeIdx;
+      currentBiomeId = BIOMES[newBiomeIdx].id;
+      buildGrass(newBiomeIdx);
+      showBiomeBanner(BIOMES[newBiomeIdx].name);
+    }
     if (waveN % 5 === 0) spawnBoss();
     else showWave(waveN);
   }
@@ -750,8 +1388,10 @@ function update(dt) {
   if (keys['KeyD'] || keys['ArrowRight']) mx += 1;
   const ml = Math.sqrt(mx * mx + my * my);
   if (ml > 0) { mx /= ml; my /= ml; }
-  P.x += mx * P.spd * dt;
-  P.y += my * P.spd * dt;
+  const pnx = P.x + mx * P.spd * dt;
+  if (!mazeCollides(pnx, P.y, P.r)) P.x = pnx;
+  const pny = P.y + my * P.spd * dt;
+  if (!mazeCollides(P.x, pny, P.r)) P.y = pny;
   if (mx !== 0) P.lastMX = mx;
 
   // Update camera — player stays at screen center
@@ -813,14 +1453,36 @@ function update(dt) {
   for (const e of enemies) {
     if (e.hp < 0) continue;
     const dx = P.x - e.x, dy = P.y - e.y, d = Math.sqrt(dx * dx + dy * dy);
+    // Slow effect (Voice of Frost)
+    let spdMult = 1;
+    if (e.slowT && e.slowT > 0) { spdMult = 0.5; e.slowT -= dt; }
     if (d > 0) {
-      e.vx += (dx / d * e.spd - e.vx) * Math.min(1, 5 * dt);
-      e.vy += (dy / d * e.spd - e.vy) * Math.min(1, 5 * dt);
+      e.vx += (dx / d * e.spd * spdMult - e.vx) * Math.min(1, 5 * dt);
+      e.vy += (dy / d * e.spd * spdMult - e.vy) * Math.min(1, 5 * dt);
     }
-    e.x += e.vx * dt; e.y += e.vy * dt;
+    // Maze wall collision — axis-separated with wall sliding
+    const enx = e.x + e.vx * dt;
+    const eny = e.y + e.vy * dt;
+    let emx = false, emy = false;
+    if (!mazeCollides(enx, e.y, e.r)) { e.x = enx; emx = true; } else { e.vx *= -0.3; }
+    if (!mazeCollides(e.x, eny, e.r)) { e.y = eny; emy = true; } else { e.vy *= -0.3; }
+    if (!emx && !emy) {
+      const px = -e.vy * 0.5, py = e.vx * 0.5;
+      if (!mazeCollides(e.x + px * dt, e.y, e.r)) e.x += px * dt;
+      else if (!mazeCollides(e.x, e.y + py * dt, e.r)) e.y += py * dt;
+    }
+    // Wyrm: sinusoidal hovering
+    if (e.type === 'wyrm') {
+      e.y += Math.sin(elapsed * 1.8 + e.x * 0.01) * 40 * dt;
+    }
     if (e.type === 'archer' && d > 100) {
       e.fireT -= dt;
       if (e.fireT <= 0) { e.fireT = 2.5 + Math.random(); fireArrow(e); }
+    }
+    // Wyrm frost breath
+    if (e.type === 'wyrm' && e.isBoss && d < 500) {
+      e.breathT = (e.breathT || 0) + dt;
+      if (e.breathT >= 3.5) { e.breathT = 0; fireFrostBreath(e); }
     }
     const cr = e.r + P.r;
     if (dx * dx + dy * dy < cr * cr) hurtPlayer(e.dmg * dt * 2);
@@ -835,6 +1497,7 @@ function update(dt) {
     s.x += s.vx * dt; s.y += s.vy * dt;
     // Kill shot if too far from player
     if (Math.hypot(s.x - P.x, s.y - P.y) > 650) { s.life = 0; continue; }
+    if (mazeCollides(s.x, s.y, s.r)) { s.life = 0; continue; }
     if (!s.enemy) {
       for (const e of enemies) {
         if (e.hp < 0 || s.life <= 0) continue;
@@ -864,11 +1527,54 @@ function update(dt) {
     if (d2 < pr * pr) { gainXp(g.v); g.life = 0; }
   }
 
+  // ── TREASURE CHEST COLLISION ──
+  if (mazeChest && !mazeChest.collected) {
+    const cdx = P.x - mazeChest.x, cdy = P.y - mazeChest.y;
+    if (cdx * cdx + cdy * cdy < (P.r + 10) * (P.r + 10)) {
+      mazeChest.collected = true;
+      P.hp = P.maxHp;
+      gainXp(50 + P.level * 10);
+      floats.push(mkFloat(mazeChest.x, mazeChest.y - 20, 'ANCIENT RELIC', '#ffd700'));
+      floats.push(mkFloat(mazeChest.x, mazeChest.y - 6, '+FULL HEAL', '#80ff80'));
+      for (let i = 0; i < 20; i++) parts.push(mkPart(mazeChest.x, mazeChest.y, '#ffd700', 120 + Math.random() * 80, 2 + Math.random() * 3, 1.2));
+      for (let i = 0; i < 8; i++) parts.push(mkPart(mazeChest.x, mazeChest.y, '#fff8e0', 60, 3, 2));
+      shake(5);
+      sfxChest();
+    }
+  }
+
+  // Ambient biome particles (snow, embers)
+  if (currentBiome >= 1 && parts.length < 300) {
+    const vw = canvas.width, vh = canvas.height;
+    const cx = P.x, cy = P.y;
+    const spawnRate = currentBiome === 3 ? 0.6 : 0.45;
+    if (Math.random() < spawnRate) {
+      const ax = cx + (Math.random() - 0.5) * vw * 1.2;
+      const ay = cy - vh * 0.5 - 10;
+      if (currentBiome === 3) {
+        // Ashvault: ember particles — rise up, warm colors
+        const ep = mkPart(ax, ay + vh, '#e04010', 15, 1 + Math.random(), 0.35);
+        ep.vy = -(20 + Math.random() * 30);
+        ep.vx = (Math.random() - 0.5) * 12;
+        ep.col = Math.random() < 0.5 ? '#e04010' : '#f08020';
+        ep.ambient = true;
+        parts.push(ep);
+      } else {
+        // Frostmere/Bleakfell: snowflakes — drift down
+        const sp = mkPart(ax, ay, '#e0e8f0', 8, 1 + Math.random() * 0.5, 0.25);
+        sp.vy = 15 + Math.random() * 20;
+        sp.vx = (Math.random() - 0.5) * 10;
+        sp.ambient = true;
+        parts.push(sp);
+      }
+    }
+  }
+
   // Particles
   for (const p of parts) {
     if (p.life <= 0) continue;
     p.x += p.vx * dt; p.y += p.vy * dt;
-    p.vx *= Math.pow(0.08, dt); p.vy *= Math.pow(0.08, dt);
+    if (!p.ambient) { p.vx *= Math.pow(0.08, dt); p.vy *= Math.pow(0.08, dt); }
     p.life -= p.dec * dt;
   }
 
@@ -1119,6 +1825,63 @@ const ARCHER_ROWS = [
 ];
 const ARCHER_SPR = ARCHER_ROWS.map(row => row.split('').map(c => AR[c] || null));
 
+// ── DRAUGR (frost zombie) ────────────────────────────────
+const DK = {
+  '.': null, O: '#1a2030', B: '#506880', b: '#3a4860', D: '#283848',
+  E: '#80c0e0', e: '#40a0c0', I: '#a0d8f0', i: '#60a8c8',
+  W: '#8090a0', w: '#606878', C: '#c0d0e0', c: '#8098a8',
+  N: '#405060', T: '#506070', t: '#384050', F: '#203040',
+};
+const DRAUGR_ROWS = [
+  '....OOOOOO.....',
+  '...OBBbbBBO....',
+  '..OBBwwwwBBO...',
+  '..OBEEwwEEBO...',
+  '..OBEewweBBO...',
+  '..OBwwIIwwBO...',
+  '...OccwwccO....',
+  '....OcwwcO.....',
+  '...OBBBBBBBO...',
+  '..OBbWWWbBBO...',
+  '..OBWDwwWBBO...',
+  '..OBBwwwBBBO...',
+  '...OBBBBBO.....',
+  '..OBbOObwBO....',
+  '..ONbwOObwNO...',
+  '..OBBO.OBBO....',
+  '..OTTO.OTTO....',
+  '..OFFO.OFFO....',
+];
+const DRAUGR_SPR = DRAUGR_ROWS.map(row => row.split('').map(c => DK[c] || null));
+
+// ── FROST WYRM (ice dragon) ─────────────────────────────
+const FK = {
+  '.': null, O: '#102030', B: '#4080b0', b: '#2060a0', D: '#103060',
+  W: '#80c8e8', w: '#50a0c8', I: '#c0e8ff', i: '#90d0f0',
+  E: '#e0f0ff', e: '#b0d8f0', R: '#e04040', F: '#a0d8f0',
+  T: '#60a0c0', t: '#408098', S: '#305878', H: '#d0e8f8',
+  N: '#203848', C: '#70b0d0', c: '#4088a8',
+};
+const WYRM_ROWS = [
+  '.O..............O.OO',
+  'OBO...OOOOOO...OBWBO',
+  'OBBO.OBBbbBBO.OBBBO.',
+  '.OBO.OBWwwWBBO.OBO..',
+  '..OO.OBWIiWBBO.OO...',
+  '....OBBWwwWBBBBO....',
+  '...OBBBEeeEBBBBO....',
+  '..OBBBBBbbBBBBBBO...',
+  '..OWWBBBbbBBBWWBO...',
+  '..OBBBBBbbBBBBBBO...',
+  '...OBBBBbbBBBBO.....',
+  '....OBBBbbBBBO......',
+  '.....OBBbbBBO.......',
+  '......OTttTO........',
+  '.....OTtOOTtO.......',
+  '.....ONO..ONO.......',
+];
+const WYRM_SPR = WYRM_ROWS.map(row => row.split('').map(c => FK[c] || null));
+
 const GM = {
   '.': null, G: '#f8d820', Y: '#fff880', W: '#ffffff', O: '#a07000',
 };
@@ -1138,85 +1901,159 @@ const GEM_SPR = GEM_ROWS.map(row => row.split('').map(c => GM[c] || null));
 const TILE = 24;
 let grassPattern = null;
 
-function buildGrass() {
-  // Build a 288×288 pattern canvas with 144 distinct 24×24 tiles
+function drawBiomeFeature(gc, biomeId, feat, h, tx, ty) {
+  const fx = (h>>4 & 7) + 5, fy = (h>>8 & 7) + 5;
+  const fx2 = (h>>5 & 9) + 3, fy2 = (h>>9 & 9) + 4;
+  const fx3 = (h>>6 & 7) + 4, fy3 = (h>>10 & 7) + 3;
+
+  if (biomeId === 'greenwood') {
+    if (feat === 0) {
+      // Oak stump
+      gc.fillStyle = '#6a4020'; gc.fillRect(tx+7, ty+8, 10, 8);
+      gc.fillStyle = '#8a5830'; gc.fillRect(tx+8, ty+8, 8, 2);
+      gc.fillStyle = '#503018'; gc.fillRect(tx+9, ty+10, 6, 5);
+      gc.fillStyle = '#3a2010'; gc.fillRect(tx+10, ty+12, 4, 2);
+    } else if (feat === 1) {
+      // Acorn
+      gc.fillStyle = '#8a6030'; gc.fillRect(tx+fx, ty+fy, 4, 3);
+      gc.fillStyle = '#604020'; gc.fillRect(tx+fx, ty+fy-1, 4, 2);
+      gc.fillStyle = '#a07840'; gc.fillRect(tx+fx+1, ty+fy+1, 2, 2);
+    } else if (feat === 2) {
+      // Fallen leaves (orange/red)
+      gc.fillStyle = '#c07020'; gc.fillRect(tx+fx, ty+fy, 3, 2);
+      gc.fillStyle = '#d09030'; gc.fillRect(tx+fx+6, ty+fy+3, 2, 2);
+      gc.fillStyle = '#a05818'; gc.fillRect(tx+fx+3, ty+fy+5, 3, 2);
+    } else if (feat === 3) {
+      // Stone
+      gc.fillStyle = '#8a8070'; gc.fillRect(tx+fx2, ty+fy2, 6, 4);
+      gc.fillStyle = '#b0a898'; gc.fillRect(tx+fx2, ty+fy2, 5, 1);
+      gc.fillStyle = '#605850'; gc.fillRect(tx+fx2+1, ty+fy2+3, 4, 1);
+    } else if (feat === 4) {
+      // Mushroom
+      gc.fillStyle = '#c03818'; gc.fillRect(tx+fx3, ty+fy3, 6, 4);
+      gc.fillStyle = '#f04820'; gc.fillRect(tx+fx3+1, ty+fy3, 4, 2);
+      gc.fillStyle = '#f0e8d0'; gc.fillRect(tx+fx3+1, ty+fy3+4, 4, 4);
+      gc.fillStyle = '#d8d0b8'; gc.fillRect(tx+fx3+2, ty+fy3+5, 2, 2);
+    }
+  } else if (biomeId === 'frostmere') {
+    if (feat === 0) {
+      // Snowdrift
+      gc.fillStyle = '#e8f0f8'; gc.fillRect(tx+4, ty+8, 16, 8);
+      gc.fillStyle = '#f0f8ff'; gc.fillRect(tx+5, ty+8, 14, 4);
+      gc.fillStyle = '#c8d8e8'; gc.fillRect(tx+6, ty+14, 10, 2);
+    } else if (feat === 1) {
+      // Frost crystal
+      gc.fillStyle = '#a0d8f0'; gc.fillRect(tx+fx+2, ty+fy, 2, 6);
+      gc.fillStyle = '#c0e8ff'; gc.fillRect(tx+fx, ty+fy+2, 6, 2);
+      gc.fillStyle = '#e0f0ff'; gc.fillRect(tx+fx+2, ty+fy+2, 2, 2);
+    } else if (feat === 2) {
+      // Bare branch
+      gc.fillStyle = '#706058'; gc.fillRect(tx+fx2, ty+fy2, 2, 8);
+      gc.fillStyle = '#605048'; gc.fillRect(tx+fx2+2, ty+fy2+2, 4, 2);
+      gc.fillStyle = '#504038'; gc.fillRect(tx+fx2-2, ty+fy2+4, 3, 2);
+    } else if (feat === 3) {
+      // Frozen stone
+      gc.fillStyle = '#8098a8'; gc.fillRect(tx+fx2, ty+fy2, 6, 4);
+      gc.fillStyle = '#a0c0d0'; gc.fillRect(tx+fx2, ty+fy2, 5, 1);
+      gc.fillStyle = '#607080'; gc.fillRect(tx+fx2+1, ty+fy2+3, 4, 1);
+    } else if (feat === 4) {
+      // Snow mound
+      gc.fillStyle = '#d8e4f0'; gc.fillRect(tx+fx3+1, ty+fy3+2, 6, 4);
+      gc.fillStyle = '#e8f0f8'; gc.fillRect(tx+fx3+2, ty+fy3+1, 4, 2);
+    }
+  } else if (biomeId === 'bleakfell') {
+    if (feat === 0) {
+      // Ice formation
+      gc.fillStyle = '#607888'; gc.fillRect(tx+6, ty+4, 4, 12);
+      gc.fillStyle = '#8098a8'; gc.fillRect(tx+7, ty+4, 2, 10);
+      gc.fillStyle = '#506070'; gc.fillRect(tx+12, ty+6, 3, 10);
+      gc.fillStyle = '#708898'; gc.fillRect(tx+13, ty+6, 1, 8);
+    } else if (feat === 1) {
+      // Frozen bone
+      gc.fillStyle = '#c0c8d0'; gc.fillRect(tx+fx, ty+fy, 6, 2);
+      gc.fillStyle = '#a0a8b0'; gc.fillRect(tx+fx+1, ty+fy+2, 2, 3);
+      gc.fillStyle = '#d0d8e0'; gc.fillRect(tx+fx, ty+fy, 2, 2);
+    } else if (feat === 2) {
+      // Deep crack
+      gc.fillStyle = '#102030'; gc.fillRect(tx+fx2+2, ty+2, 2, TILE-4);
+      gc.fillStyle = '#182838'; gc.fillRect(tx+fx2+3, ty+4, 1, TILE-8);
+    } else if (feat === 3) {
+      // Rime pillar
+      gc.fillStyle = '#607888'; gc.fillRect(tx+8, ty+2, 6, 14);
+      gc.fillStyle = '#8098a8'; gc.fillRect(tx+9, ty+2, 4, 12);
+      gc.fillStyle = '#a0b8c8'; gc.fillRect(tx+10, ty+2, 2, 4);
+    } else if (feat === 4) {
+      // Dark stone
+      gc.fillStyle = '#384048'; gc.fillRect(tx+fx3, ty+fy3, 8, 5);
+      gc.fillStyle = '#485058'; gc.fillRect(tx+fx3+1, ty+fy3, 6, 2);
+    }
+  } else if (biomeId === 'ashvault') {
+    if (feat === 0) {
+      // Ember crack
+      gc.fillStyle = '#601008'; gc.fillRect(tx+fx2+1, ty+2, 2, TILE-4);
+      gc.fillStyle = '#c04020'; gc.fillRect(tx+fx2+1, ty+6, 2, 4);
+      gc.fillStyle = '#f08040'; gc.fillRect(tx+fx2+1, ty+8, 2, 2);
+    } else if (feat === 1) {
+      // Rune carving
+      gc.fillStyle = '#504848'; gc.fillRect(tx+6, ty+6, 12, 12);
+      gc.fillStyle = '#605858'; gc.fillRect(tx+7, ty+7, 10, 10);
+      gc.fillStyle = '#80a0c0'; gc.fillRect(tx+9, ty+8, 2, 8);
+      gc.fillStyle = '#80a0c0'; gc.fillRect(tx+8, ty+11, 6, 2);
+      gc.fillStyle = '#80a0c0'; gc.fillRect(tx+13, ty+9, 2, 5);
+    } else if (feat === 2) {
+      // Obsidian shard
+      gc.fillStyle = '#181018'; gc.fillRect(tx+fx+1, ty+fy, 3, 8);
+      gc.fillStyle = '#281828'; gc.fillRect(tx+fx+2, ty+fy, 1, 6);
+      gc.fillStyle = '#382038'; gc.fillRect(tx+fx+2, ty+fy+1, 1, 3);
+    } else if (feat === 3) {
+      // Ash pile
+      gc.fillStyle = '#383030'; gc.fillRect(tx+fx2, ty+fy2, 8, 4);
+      gc.fillStyle = '#484040'; gc.fillRect(tx+fx2+1, ty+fy2, 6, 2);
+      gc.fillStyle = '#282020'; gc.fillRect(tx+fx2+2, ty+fy2+3, 4, 1);
+    } else if (feat === 4) {
+      // Ancient pillar
+      gc.fillStyle = '#403838'; gc.fillRect(tx+8, ty+2, 8, 16);
+      gc.fillStyle = '#504848'; gc.fillRect(tx+9, ty+2, 6, 14);
+      gc.fillStyle = '#605050'; gc.fillRect(tx+10, ty+2, 4, 4);
+      gc.fillStyle = '#80a0c0'; gc.fillRect(tx+11, ty+6, 2, 2);
+    }
+  }
+}
+
+function buildGrass(biomeIdx) {
+  const bi = biomeIdx != null ? biomeIdx : 0;
+  const biome = BIOMES[bi];
   const PCOLS = 12, PROWS = 12;
   const PW = TILE * PCOLS, PH = TILE * PROWS;
   const tc = document.createElement('canvas');
   tc.width = PW; tc.height = PH;
   const gc = tc.getContext('2d');
 
-  const bases  = ['#78a838','#88b840','#6a9828','#82a030','#90b848','#7ab040','#70a030','#86b038'];
-  const lights = ['#b8d870','#c8e878','#a8c860'];
-  const darks  = ['#507820','#406018','#5a8228'];
-  const dirtA  = '#c8a060';
-  const dirtB  = '#a07840';
+  const bases  = biome.bases;
+  const lights = biome.lights;
+  const darks  = biome.darks;
 
   for (let row = 0; row < PROWS; row++) {
     for (let col = 0; col < PCOLS; col++) {
-      // Deterministic hash per tile
       const h = ((col * 73856093) ^ (row * 19349663)) >>> 0;
       const tx = col * TILE, ty = row * TILE;
 
-      // Base green fill
       gc.fillStyle = bases[h % bases.length];
       gc.fillRect(tx, ty, TILE, TILE);
 
       const feat = h % 17;
-      if (feat === 0) {
-        // Dirt patch
-        gc.fillStyle = dirtA;
-        gc.fillRect(tx + 5, ty + 5, TILE - 10, TILE - 10);
-        gc.fillStyle = dirtB;
-        gc.fillRect(tx + 7, ty + 14, 5, 2);
-        gc.fillRect(tx + 12, ty + 8, 3, 2);
-      } else if (feat === 1) {
-        // Yellow flower
-        gc.fillStyle = '#d8c030';
-        gc.fillRect(tx + (h>>4 & 7) + 5, ty + (h>>8 & 7) + 5, 2, 2);
-        gc.fillStyle = '#f8e840';
-        gc.fillRect(tx + (h>>4 & 7) + 4, ty + (h>>8 & 7) + 4, 4, 4);
-        gc.fillStyle = '#fff060';
-        gc.fillRect(tx + (h>>4 & 7) + 5, ty + (h>>8 & 7) + 5, 2, 2);
-      } else if (feat === 2) {
-        // Pink flower
-        gc.fillStyle = '#e878a8';
-        const fx = tx + (h>>4 & 9) + 4, fy = ty + (h>>9 & 7) + 5;
-        gc.fillRect(fx, fy, 4, 2);
-        gc.fillRect(fx + 1, fy - 1, 2, 4);
-        gc.fillStyle = '#ffd0e8';
-        gc.fillRect(fx + 1, fy, 2, 2);
-      } else if (feat === 3) {
-        // Small stone
-        gc.fillStyle = '#8a8070';
-        gc.fillRect(tx + (h>>5 & 9) + 3, ty + (h>>9 & 9) + 4, 6, 4);
-        gc.fillStyle = '#b0a898';
-        gc.fillRect(tx + (h>>5 & 9) + 3, ty + (h>>9 & 9) + 4, 5, 1);
-        gc.fillStyle = '#605850';
-        gc.fillRect(tx + (h>>5 & 9) + 4, ty + (h>>9 & 9) + 7, 4, 1);
-      } else if (feat === 4) {
-        // Mushroom
-        gc.fillStyle = '#c03818';
-        gc.fillRect(tx + (h>>6&7)+4, ty + (h>>10&7)+3, 6, 4);
-        gc.fillStyle = '#f04820';
-        gc.fillRect(tx + (h>>6&7)+5, ty + (h>>10&7)+3, 4, 2);
-        gc.fillStyle = '#f0e8d0';
-        gc.fillRect(tx + (h>>6&7)+5, ty + (h>>10&7)+7, 4, 4);
-        gc.fillStyle = '#d8d0b8';
-        gc.fillRect(tx + (h>>6&7)+6, ty + (h>>10&7)+8, 2, 2);
-      }
+      if (feat <= 4) drawBiomeFeature(gc, biome.id, feat, h, tx, ty);
 
-      // Grass blade highlights (every tile)
+      // Highlights
       gc.fillStyle = lights[h % lights.length];
       const bx1 = tx + (h % (TILE - 4)) + 2;
-      gc.fillRect(bx1,     ty + 2, 2, 5);
+      gc.fillRect(bx1, ty + 2, 2, 5);
       gc.fillRect(bx1 + 1, ty + 2, 2, 3);
 
       gc.fillStyle = darks[h % darks.length];
       const bx2 = tx + ((h >> 4) % (TILE - 4)) + 2;
       gc.fillRect(bx2, ty + TILE - 5, 2, 4);
 
-      // Second blade cluster
       if (h % 3 === 0) {
         gc.fillStyle = lights[(h >> 2) % lights.length];
         const bx3 = tx + ((h >> 8) % (TILE - 6)) + 3;
@@ -1228,10 +2065,78 @@ function buildGrass() {
   grassPattern = ctx.createPattern(tc, 'repeat');
 }
 
+// ── LABYRINTH RENDERING ──────────────────────────────────
+function drawMazeWall(mc, tx, ty, col, row) {
+  const h = ((col * 73856093) ^ (row * 19349663)) >>> 0;
+  mc.fillStyle = '#504840';
+  mc.fillRect(tx, ty, TILE, TILE);
+  mc.fillStyle = '#605848';
+  mc.fillRect(tx, ty, TILE - 2, TILE - 2);
+  mc.fillStyle = '#2a2420';
+  mc.fillRect(tx + 2, ty + TILE - 2, TILE - 2, 2);
+  mc.fillRect(tx + TILE - 2, ty + 2, 2, TILE - 2);
+  mc.fillStyle = ['#584838','#4a4030','#5a4a3a'][h % 3];
+  mc.fillRect(tx + 2, ty + 2, TILE - 4, TILE - 4);
+  mc.fillStyle = '#1a1410';
+  if (h % 3 === 0) mc.fillRect(tx, ty + 11, TILE, 2);
+  if (h % 5 < 2) mc.fillRect(tx + 10, ty, 2, TILE);
+  if (h % 11 === 0) {
+    mc.fillStyle = '#2a4a20';
+    mc.fillRect(tx + (h % 10) + 4, ty + ((h >> 4) % 10) + 4, 3, 2);
+  }
+}
+
+function drawMazeFloor(mc, tx, ty, col, row) {
+  const h = ((col * 73856093) ^ (row * 19349663)) >>> 0;
+  mc.fillStyle = ['#6a6258','#706860','#5a5450'][h % 3];
+  mc.fillRect(tx, ty, TILE, TILE);
+  mc.fillStyle = '#4a4238';
+  mc.fillRect(tx, ty, 1, TILE);
+  mc.fillRect(tx, ty, TILE, 1);
+  if (h % 7 === 0) {
+    mc.fillStyle = '#504840';
+    mc.fillRect(tx + (h % 14) + 4, ty + ((h >> 3) % 14) + 4, 4, 3);
+  }
+}
+
+function buildMazeCanvas() {
+  mazeCvs = document.createElement('canvas');
+  mazeCvs.width = MAZE_W; mazeCvs.height = MAZE_H;
+  const mc = mazeCvs.getContext('2d');
+  for (let row = 0; row < MAZE_ROWS; row++) {
+    for (let col = 0; col < MAZE_COLS; col++) {
+      const tx = col * TILE, ty = row * TILE;
+      if (mazeGrid[row * MAZE_COLS + col] === 1) drawMazeWall(mc, tx, ty, col, row);
+      else drawMazeFloor(mc, tx, ty, col, row);
+    }
+  }
+}
+
 // ── VIEWPORT CULL HELPER ──────────────────────────────────
 function inView(x, y, margin) {
   return x >= camX - margin && x <= camX + canvas.width  + margin &&
          y >= camY - margin && y <= camY + canvas.height + margin;
+}
+
+function mazeCollides(cx, cy, r) {
+  if (!mazeGrid) return false;
+  const lx = cx - MAZE_OX, ly = cy - MAZE_OY;
+  if (lx + r < 0 || lx - r >= MAZE_W || ly + r < 0 || ly - r >= MAZE_H) return false;
+  const c0 = Math.max(0, Math.floor((lx - r) / TILE));
+  const c1 = Math.min(MAZE_COLS - 1, Math.floor((lx + r) / TILE));
+  const r0 = Math.max(0, Math.floor((ly - r) / TILE));
+  const r1 = Math.min(MAZE_ROWS - 1, Math.floor((ly + r) / TILE));
+  for (let row = r0; row <= r1; row++) {
+    for (let col = c0; col <= c1; col++) {
+      if (mazeGrid[row * MAZE_COLS + col] !== 1) continue;
+      const tx = col * TILE, ty = row * TILE;
+      const nx = Math.max(tx, Math.min(lx, tx + TILE));
+      const ny = Math.max(ty, Math.min(ly, ty + TILE));
+      const dx = lx - nx, dy = ly - ny;
+      if (dx * dx + dy * dy < r * r) return true;
+    }
+  }
+  return false;
 }
 
 // ── WALK ANIMATION ────────────────────────────────────────
@@ -1279,12 +2184,14 @@ function drawEnemySprite(e) {
   if (e.type === 'skeleton') { spr = SKEL_SPR;    scale = SZ;     }
   if (e.type === 'troll')    { spr = TROLL_SPR;   scale = SZ + 1; }
   if (e.type === 'archer')   { spr = ARCHER_SPR;  scale = SZ;     }
+  if (e.type === 'draugr')   { spr = DRAUGR_SPR;  scale = SZ;     }
   if (e.type === 'boss')     { spr = TROLL_SPR;   scale = SZ + 3; }
+  if (e.type === 'wyrm')     { spr = WYRM_SPR;    scale = SZ + 3; }
   if (!spr) { ctx.restore(); return; }
 
   const flip  = e.vx < 0;
   const bob   = (Math.floor(elapsed / 0.15) % 2) * -1;
-  const flash = e.type === 'boss'
+  const flash = (e.type === 'boss' || e.type === 'wyrm')
     ? Math.max(0, e.flash, 0.15 + 0.1 * Math.sin(elapsed * 4))
     : Math.max(0, e.flash);
 
@@ -1295,6 +2202,16 @@ function drawEnemySprite(e) {
     ctx.fillStyle = '#600010';
     ctx.beginPath();
     ctx.ellipse(Math.round(e.x), Math.round(e.y), e.r * 1.5, e.r, 0, 0, TAU);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  // Wyrm frost aura
+  if (e.type === 'wyrm') {
+    const pulse = 0.15 + 0.07 * Math.sin(elapsed * 2.5);
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = '#1040a0';
+    ctx.beginPath();
+    ctx.ellipse(Math.round(e.x), Math.round(e.y), e.r * 1.6, e.r * 0.9, 0, 0, TAU);
     ctx.fill();
     ctx.globalAlpha = 1;
   }
@@ -1336,20 +2253,20 @@ function drawEnemySprite(e) {
 
 // ── BOSS HP BAR (screen-space HUD) ───────────────────────
 function drawBossBar() {
-  const boss = enemies.find(e => e.type === 'boss' && e.hp > 0);
+  const boss = enemies.find(e => e.isBoss && e.hp > 0);
   if (!boss) return;
   const bw = Math.floor(canvas.width * 0.5);
   const bx = Math.floor((canvas.width - bw) / 2);
   const by = 18;
   const pct = Math.max(0, boss.hp / boss.maxHp);
+  const isWyrm = boss.type === 'wyrm';
   ctx.fillStyle = '#0a0804';
   ctx.fillRect(bx - 2, by - 2, bw + 4, 14);
-  ctx.fillStyle = '#1a0004';
+  ctx.fillStyle = isWyrm ? '#001020' : '#1a0004';
   ctx.fillRect(bx, by, bw, 10);
   const grad = ctx.createLinearGradient(bx, 0, bx + bw, 0);
-  grad.addColorStop(0, '#e82020');
-  grad.addColorStop(0.5, '#ff6040');
-  grad.addColorStop(1, '#c01010');
+  if (isWyrm) { grad.addColorStop(0, '#2060a0'); grad.addColorStop(0.5, '#40a0e0'); grad.addColorStop(1, '#1050a0'); }
+  else { grad.addColorStop(0, '#e82020'); grad.addColorStop(0.5, '#ff6040'); grad.addColorStop(1, '#c01010'); }
   ctx.fillStyle = grad;
   ctx.fillRect(bx, by, Math.round(bw * pct), 10);
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
@@ -1357,7 +2274,8 @@ function drawBossBar() {
   ctx.font = '6px "Press Start 2P"';
   ctx.textAlign = 'center';
   ctx.fillStyle = '#fff';
-  ctx.fillText('BOSS  ' + Math.ceil(boss.hp) + ' / ' + boss.maxHp, canvas.width / 2, by - 3);
+  const label = isWyrm ? 'FROST WYRM' : 'BOSS';
+  ctx.fillText(label + '  ' + Math.ceil(boss.hp) + ' / ' + boss.maxHp, canvas.width / 2, by - 3);
 }
 
 // ── OFF-SCREEN DANGER ARROWS (screen-space) ───────────────
@@ -1397,7 +2315,9 @@ function drawDangerIndicators() {
     const iy = Math.round(sy + sin * t);
     if (ix < 0 || ix > w || iy < 0 || iy > h) continue;
 
-    const col = e.type === 'troll'    ? '#c060ff' :
+    const col = e.type === 'wyrm'     ? '#40c0ff' :
+                e.type === 'troll'    ? '#c060ff' :
+                e.type === 'draugr'   ? '#6090b0' :
                 e.type === 'skeleton' ? '#d0d0b0' :
                 e.type === 'archer'   ? '#f0a030' :
                 e.type === 'boss'     ? '#ff2020' : '#50e020';
@@ -1447,9 +2367,48 @@ function render() {
   );
 
   // ── BACKGROUND — infinite tiling grass ──
-  if (!grassPattern) buildGrass();
+  if (!grassPattern) buildGrass(currentBiome);
   ctx.fillStyle = grassPattern;
   ctx.fillRect(camX - TILE, camY - TILE, canvas.width + TILE * 2, canvas.height + TILE * 2);
+
+  // ── BIOME TINT OVERLAY ──
+  const _biome = BIOMES[currentBiome];
+  if (_biome.tintColor) {
+    ctx.fillStyle = _biome.tintColor;
+    ctx.fillRect(camX - TILE, camY - TILE, canvas.width + TILE * 2, canvas.height + TILE * 2);
+  }
+
+  // ── LABYRINTH ──
+  if (mazeCvs && MAZE_OX + MAZE_W > camX - 50 && MAZE_OX < camX + canvas.width + 50 &&
+      MAZE_OY + MAZE_H > camY - 50 && MAZE_OY < camY + canvas.height + 50) {
+    ctx.drawImage(mazeCvs, MAZE_OX, MAZE_OY);
+  }
+
+  // ── TREASURE CHEST ──
+  if (mazeChest && !mazeChest.collected && inView(mazeChest.x, mazeChest.y, 20)) {
+    const cx = mazeChest.x, cy = mazeChest.y;
+    const bob = Math.sin(elapsed * 2.5) * 2;
+    ctx.save();
+    ctx.translate(Math.round(cx), Math.round(cy + bob));
+    // chest body
+    ctx.fillStyle = '#8B5E3C';
+    ctx.fillRect(-8, -4, 16, 10);
+    // chest lid
+    ctx.fillStyle = '#A0703C';
+    ctx.fillRect(-9, -7, 18, 5);
+    // metal band
+    ctx.fillStyle = '#ffd700';
+    ctx.fillRect(-9, -3, 18, 2);
+    // lock
+    ctx.fillRect(-2, -2, 4, 3);
+    // sparkle
+    const sp = Math.sin(elapsed * 6) * 0.5 + 0.5;
+    ctx.globalAlpha = sp;
+    ctx.fillStyle = '#fff8e0';
+    ctx.fillRect(-1, -14, 2, 4);
+    ctx.fillRect(-2, -13, 4, 2);
+    ctx.restore();
+  }
 
   // ── XP GEMS — viewport culled ──
   for (const g of gems) {
@@ -1485,7 +2444,12 @@ function render() {
     const angle = Math.atan2(s.vy, s.vx);
     ctx.translate(Math.round(s.x), Math.round(s.y));
     ctx.rotate(angle);
-    if (s.enemy) {
+    if (s.enemy && s.frost) {
+      // Frost shard
+      ctx.fillStyle = '#80d0ff'; ctx.fillRect(-6, -2, 12, 4);
+      ctx.fillStyle = '#c0f0ff'; ctx.fillRect(-4, -1, 8, 2);
+      ctx.fillStyle = '#e0f8ff'; ctx.fillRect(-2, -1, 4, 2);
+    } else if (s.enemy) {
       ctx.fillStyle = '#a05010'; ctx.fillRect(-8, -1, 14, 2);
       ctx.fillStyle = '#e0d060'; ctx.fillRect( 6, -1,  3, 2);
       ctx.fillStyle = '#604000'; ctx.fillRect(-10,-2,  4, 4);
@@ -1500,7 +2464,7 @@ function render() {
     ctx.translate(-Math.round(s.x), -Math.round(s.y));
     for (let i = 0; i < s.trail.length; i++) {
       ctx.globalAlpha = (i / s.trail.length) * 0.55;
-      ctx.fillStyle = s.enemy ? '#c07020' : '#80c0ff';
+      ctx.fillStyle = s.frost ? '#80d0ff' : s.enemy ? '#c07020' : '#80c0ff';
       const tsz = Math.max(1, Math.round(2 * i / s.trail.length));
       ctx.fillRect(Math.round(s.trail[i].x) - tsz, Math.round(s.trail[i].y) - tsz, tsz * 2, tsz * 2);
     }
@@ -1596,6 +2560,8 @@ function render() {
     document.getElementById('xp-fill').style.width      = (P.xp / P.xpNext * 100) + '%';
     document.getElementById('level-txt').textContent    = 'LV ' + P.level;
     document.getElementById('kills-txt').textContent    = 'SLAIN ' + kills;
+    document.getElementById('wave-txt').textContent     = 'WAVE ' + waveN;
+    document.getElementById('biome-txt').textContent    = BIOMES[currentBiome].name;
     const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
     document.getElementById('timer-txt').textContent    = m + ':' + String(s).padStart(2, '0');
     document.getElementById('health-fill').style.width  = (P.hp / P.maxHp * 100) + '%';

@@ -1058,8 +1058,8 @@ function killEnemy(e) {
   for (let i=0;i<4;i++)  parts.push(mkPart(e.x,e.y,'#e0c080',50,4,1.5));
   const n = Math.ceil(e.xp / 5);
   for (let i=0;i<n;i++) gems.push(mkGem(e.x, e.y, Math.ceil(e.xp / n)));
-  shake(3);
-  if (e.type === 'wyrm') { sfxWyrmDeath(); shake(8); } else sfxKill();
+  shake(1.5);
+  if (e.type === 'wyrm') { sfxWyrmDeath(); shake(3); } else sfxKill();
   if (e.isBoss) {
     runBossKills++;
     save.bossesKilled++;
@@ -1080,7 +1080,7 @@ function hurtPlayer(amt) {
   if (P.iframes || P.shielded) return;
   P.hp = Math.max(0, P.hp - amt);
   P.iframes = true; P.iframeT = 0.55;
-  shake(9);
+  shake(3);
   sfxHurt();
   damageFlash = 1;
   if (P.hp <= 0) gameOver();
@@ -1182,7 +1182,7 @@ function explode(x, y, r, d) {
     if (dx*dx + dy*dy < r*r) hitEnemy(e, d * .55);
   });
   for (let i=0;i<16;i++) parts.push(mkPart(x, y, '#e08020', 160, 3+Math.random()*3, 1.6));
-  shake(5);
+  shake(2);
 }
 
 // ── GAME FLOW ─────────────────────────────────────────────
@@ -1667,7 +1667,7 @@ function update(dt) {
       floats.push(mkFloat(mazeChest.x, mazeChest.y - 6, '+FULL HEAL', '#80ff80'));
       for (let i = 0; i < 20; i++) parts.push(mkPart(mazeChest.x, mazeChest.y, '#ffd700', 120 + Math.random() * 80, 2 + Math.random() * 3, 1.2));
       for (let i = 0; i < 8; i++) parts.push(mkPart(mazeChest.x, mazeChest.y, '#fff8e0', 60, 3, 2));
-      shake(5);
+      shake(2);
       sfxChest();
     }
   }
